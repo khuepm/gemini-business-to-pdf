@@ -33,13 +33,18 @@
   opacity: 0.6;
 }
 
+.gemini-pdf-export-button .icon {
+  width: 16px;
+  height: 16px;
+}
+
 .gemini-pdf-export-button .spinner {
   width: 16px;
   height: 16px;
-  border: 2px solid #ffffff;
+  border: 2px solid white;
   border-top-color: transparent;
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  animation: spin 0.6s linear infinite;
 }
 
 @keyframes spin {
@@ -48,7 +53,7 @@
 
 .gemini-pdf-notification {
   position: fixed;
-  top: 80px;
+  bottom: 20px;
   right: 20px;
   z-index: 10000;
   
@@ -56,9 +61,8 @@
   border-radius: 4px;
   
   font-size: 14px;
-  font-weight: 500;
-  
   box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  
   animation: slideIn 0.3s ease;
 }
 

@@ -32,7 +32,7 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Test error classification và handling
     - _Requirements: 6.4, 6.6_
 
-- [~] 3. Triển khai UI Injector
+- [x] 3. Triển khai UI Injector
   - [x] 3.1 Tạo UIInjector class với method injectButton
     - Tạo export button element với DOM API
     - Inject button vào header của Gemini Business page
@@ -40,26 +40,26 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Thêm tooltip (title attribute)
     - _Requirements: 1.1, 1.3, 1.4_
   
-  - [~] 3.2 Implement UI state management methods
+  - [x] 3.2 Implement UI state management methods
     - showLoading(): hiển thị spinner trong button
     - hideLoading(): ẩn spinner
     - disableButton(): disable button
     - enableButton(): enable button
     - _Requirements: 6.1, 6.2, 6.5_
   
-  - [~] 3.3 Implement notification system
+  - [x] 3.3 Implement notification system
     - showNotification(message, type): hiển thị toast notification
     - Auto-dismiss notification sau 5 giây
     - Support success và error types
     - _Requirements: 5.7, 6.3, 6.4_
   
-  - [~] 3.4 Tạo CSS styles cho button và notifications
+  - [x] 3.4 Tạo CSS styles cho button và notifications
     - Style export button với hover effects
     - Style loading spinner animation
     - Style notification toast với success/error variants
     - _Requirements: 1.5_
   
-  - [~] 3.5 Viết unit tests cho UI Injector
+  - [x] 3.5 Viết unit tests cho UI Injector
     - Test button injection vào DOM
     - Test UI state changes (loading, disabled, enabled)
     - Test notification display
