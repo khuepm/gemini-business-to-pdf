@@ -27,7 +27,7 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Integrate với Logger
     - _Requirements: 6.4_
   
-  - [ ]* 2.3 Viết unit tests cho Logger và Error Handler
+  - [ ] 2.3 Viết unit tests cho Logger và Error Handler
     - Test logging ở các levels khác nhau
     - Test error classification và handling
     - _Requirements: 6.4, 6.6_
@@ -59,7 +59,7 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Style notification toast với success/error variants
     - _Requirements: 1.5_
   
-  - [ ]* 3.5 Viết unit tests cho UI Injector
+  - [ ] 3.5 Viết unit tests cho UI Injector
     - Test button injection vào DOM
     - Test UI state changes (loading, disabled, enabled)
     - Test notification display
@@ -72,7 +72,7 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Return array of HTMLElement
     - _Requirements: 2.1_
   
-  - [ ]* 4.2 Viết property test cho findCollapsedMessages
+  - [ ] 4.2 Viết property test cho findCollapsedMessages
     - **Property 1: Tìm tất cả collapsed messages**
     - **Validates: Requirements 2.1**
     - Generate random DOM structures với varying số lượng collapsed messages
@@ -85,7 +85,7 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Return Promise<void>
     - _Requirements: 2.2, 2.3_
   
-  - [ ]* 4.4 Viết property test cho expandMessage
+  - [ ] 4.4 Viết property test cho expandMessage
     - **Property 2: Mở rộng messages thành công**
     - **Validates: Requirements 2.2**
     - Generate random collapsed messages
@@ -99,7 +99,7 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Return ExpandResult với statistics
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
   
-  - [ ]* 4.6 Viết property tests cho expandAllMessages
+  - [ ] 4.6 Viết property tests cho expandAllMessages
     - **Property 3: Đợi tất cả messages mở rộng**
     - **Validates: Requirements 2.3**
     - **Property 4: Xử lý lỗi expansion gracefully**
@@ -107,7 +107,7 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - **Property 5: Bảo toàn scroll position**
     - **Validates: Requirements 2.5**
   
-  - [ ]* 4.7 Viết unit tests cho Message Expander
+  - [ ] 4.7 Viết unit tests cho Message Expander
     - Test với empty chat (no collapsed messages)
     - Test với 1 collapsed message
     - Test timeout scenario
@@ -127,7 +127,7 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Return ChatContent object với array of messages
     - _Requirements: 3.1_
   
-  - [ ]* 6.2 Viết property test cho extractChatContent
+  - [ ] 6.2 Viết property test cho extractChatContent
     - **Property 6: Trích xuất tất cả messages**
     - **Validates: Requirements 3.1**
     - Generate random chat containers với varying số lượng messages
@@ -146,7 +146,7 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Return 'user' hoặc 'gemini'
     - _Requirements: 3.7_
   
-  - [ ]* 6.5 Viết property tests cho Content Extractor
+  - [ ] 6.5 Viết property tests cho Content Extractor
     - **Property 7: Bảo toàn HTML structure**
     - **Validates: Requirements 3.2**
     - **Property 8: Bảo toàn tất cả formatting**
@@ -156,7 +156,7 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Generate random HTML với various formatting (bold, italic, code, tables, lists)
     - Verify structure và formatting được preserve
   
-  - [ ]* 6.6 Viết unit tests cho Content Extractor
+  - [ ] 6.6 Viết unit tests cho Content Extractor
     - Test với empty chat
     - Test với messages chứa code blocks
     - Test với messages chứa tables
@@ -172,7 +172,7 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Return string hoặc null nếu không tìm thấy
     - _Requirements: 4.1_
   
-  - [ ]* 7.2 Viết property test cho extractTitle
+  - [ ] 7.2 Viết property test cho extractTitle
     - **Property 10: Trích xuất title thành công**
     - **Validates: Requirements 4.1**
     - Generate random DOM states với và không có title
@@ -195,13 +195,13 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Luôn thêm extension ".pdf"
     - _Requirements: 4.2, 4.3, 4.4, 4.5_
   
-  - [ ]* 7.6 Viết property test cho generateFilename
+  - [ ] 7.6 Viết property test cho generateFilename
     - **Property 11: Filename generation và sanitization**
     - **Validates: Requirements 4.2, 4.4, 4.5**
     - Generate random strings (bao gồm invalid characters, very long strings)
     - Verify filename luôn valid, không có invalid chars, không quá dài
   
-  - [ ]* 7.7 Viết unit tests cho Title Extractor
+  - [ ] 7.7 Viết unit tests cho Title Extractor
     - Test với title bình thường
     - Test với title chứa tất cả invalid characters
     - Test với title rất dài (>100 chars)
@@ -229,7 +229,7 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Call downloadPDF với blob và filename
     - _Requirements: 5.1, 5.3, 5.6_
   
-  - [ ]* 8.4 Viết property test cho generatePDF
+  - [ ] 8.4 Viết property test cho generatePDF
     - **Property 12: HTML to PDF conversion với format preservation**
     - **Validates: Requirements 5.1, 5.3**
     - Generate random HTML content với various formatting
@@ -243,13 +243,13 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Cleanup: revoke object URL và remove element
     - _Requirements: 5.6_
   
-  - [ ]* 8.6 Viết property test cho downloadPDF
+  - [ ] 8.6 Viết property test cho downloadPDF
     - **Property 13: PDF download với đúng filename**
     - **Validates: Requirements 5.6**
     - Generate random filenames
     - Mock download và verify filename được sử dụng đúng
   
-  - [ ]* 8.7 Viết unit tests cho PDF Generator
+  - [ ] 8.7 Viết unit tests cho PDF Generator
     - Test applyStyles với different message types
     - Test generatePDF với sample content
     - Test downloadPDF trigger
@@ -285,7 +285,7 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Prevent multiple simultaneous exports
     - _Requirements: 1.1, 6.2_
   
-  - [ ]* 10.4 Viết property tests cho ExportController
+  - [ ] 10.4 Viết property tests cho ExportController
     - **Property 14: Button disabled trong khi processing**
     - **Validates: Requirements 6.2**
     - **Property 15: Error handling với message cụ thể**
@@ -293,7 +293,7 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - **Property 16: Button re-enabled sau completion**
     - **Validates: Requirements 6.5**
   
-  - [ ]* 10.5 Viết integration tests cho complete export flow
+  - [ ] 10.5 Viết integration tests cho complete export flow
     - Test end-to-end flow từ button click đến PDF download
     - Mock DOM của Gemini Business
     - Mock html2pdf library
@@ -313,7 +313,7 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Chỉ initialize extension nếu đúng domain
     - _Requirements: 7.2_
   
-  - [ ]* 11.3 Viết property test cho domain restriction
+  - [ ] 11.3 Viết property test cho domain restriction
     - **Property 17: Domain restriction**
     - **Validates: Requirements 7.2**
     - Generate random URLs
@@ -324,7 +324,7 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Add test để check không có outbound network calls
     - _Requirements: 8.2, 8.3_
   
-  - [ ]* 12.2 Viết property test cho no external data transmission
+  - [ ] 12.2 Viết property test cho no external data transmission
     - **Property 19: No external data transmission**
     - **Validates: Requirements 8.2**
     - Mock network layer
@@ -334,7 +334,7 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Verify không có data được lưu vào localStorage/sessionStorage/IndexedDB
     - _Requirements: 8.4_
   
-  - [ ]* 12.4 Viết property test cho no data persistence
+  - [ ] 12.4 Viết property test cho no data persistence
     - **Property 20: No data persistence**
     - **Validates: Requirements 8.4**
     - Check storage sau export operations
@@ -346,7 +346,7 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Sử dụng requestIdleCallback để tránh block UI
     - _Requirements: 7.4_
   
-  - [ ]* 13.2 Viết property test cho large conversations
+  - [ ] 13.2 Viết property test cho large conversations
     - **Property 18: Xử lý large conversations**
     - **Validates: Requirements 7.4**
     - Generate conversations với 100-500 messages
