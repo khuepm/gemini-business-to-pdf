@@ -7,8 +7,9 @@
     "type": "agentStop"
   },
   "then": {
-    "type": "runCommand",
-    "command": "git add -A && git commit -m \"Complete task: $(date '+%Y-%m-%d %H:%M:%S')\" && git push",
-    "timeout": 30
-  }
+    "type": "askAgent",
+    "prompt": "tạo commit message dựa theo các file cập nhật kèm tên task, số thứ tự task, bắt đầu bằng commit convention (fix, feat, chore, docs...)"
+  },
+  "workspaceFolderName": "gemini-business-to-pdf",
+  "shortName": "auto-git-push-after-task"
 }
