@@ -6,7 +6,7 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
 
 ## Tasks
 
-- [ ] 1. Thiết lập cấu trúc project và cấu hình cơ bản
+- [x] 1. Thiết lập cấu trúc project và cấu hình cơ bản
   - Tạo cấu trúc thư mục cho Chrome extension
   - Tạo manifest.json với Manifest V3 configuration
   - Thiết lập TypeScript configuration (tsconfig.json)

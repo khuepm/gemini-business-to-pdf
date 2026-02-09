@@ -1,0 +1,23 @@
+{
+  "name": "gemini-business-to-pdf",
+  "version": "1.0.0",
+  "description": "Chrome extension to export Gemini Business conversations to PDF",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch",
+    "test": "vitest --run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.268",
+    "@types/node": "^20.12.7",
+    "fast-check": "^3.19.0",
+    "jsdom": "^24.0.0",
+    "typescript": "^5.4.5",
+    "vite": "^5.2.10",
+    "vitest": "^1.5.0"
+  },
+  "dependencies": {
+    "html2pdf.js": "^0.10.1"
+  }
+}

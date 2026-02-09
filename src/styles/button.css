@@ -1,0 +1,84 @@
+.gemini-pdf-export-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  
+  padding: 10px 20px;
+  background: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: all 0.2s ease;
+}
+
+.gemini-pdf-export-button:hover {
+  background: #1557b0;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.gemini-pdf-export-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.gemini-pdf-export-button .spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #ffffff;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.gemini-pdf-notification {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  z-index: 10000;
+  
+  padding: 12px 20px;
+  border-radius: 4px;
+  
+  font-size: 14px;
+  font-weight: 500;
+  
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  animation: slideIn 0.3s ease;
+}
+
+.gemini-pdf-notification.success {
+  background: #4caf50;
+  color: white;
+}
+
+.gemini-pdf-notification.error {
+  background: #f44336;
+  color: white;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
