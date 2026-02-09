@@ -1,0 +1,14 @@
+{
+  "enabled": true,
+  "name": "Auto Git Push After Task",
+  "description": "Tự động commit và push tất cả thay đổi lên git repository sau khi agent hoàn thành một task",
+  "version": "1",
+  "when": {
+    "type": "agentStop"
+  },
+  "then": {
+    "type": "runCommand",
+    "command": "git add -A && git commit -m \"Complete task: $(date '+%Y-%m-%d %H:%M:%S')\" && git push",
+    "timeout": 30
+  }
+}
