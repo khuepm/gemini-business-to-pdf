@@ -1,9 +1,10 @@
 // Vitest setup file
-import { expect, afterEach } from 'vitest';
-import { cleanup } from '@testing-library/dom';
+import { afterEach } from 'vitest';
 
 // Cleanup after each test
 afterEach(() => {
-  cleanup();
-  document.body.innerHTML = '';
+  // Clear DOM if it exists
+  if (typeof document !== 'undefined') {
+    document.body.innerHTML = '';
+  }
 });
