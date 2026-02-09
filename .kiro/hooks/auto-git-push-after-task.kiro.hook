@@ -1,14 +1,14 @@
 {
   "enabled": true,
   "name": "Auto Git Push After Task",
-  "description": "Tự động commit và push tất cả thay đổi lên git repository sau khi agent hoàn thành một task",
+  "description": "Tự động commit và push tất cả thay đổi lên git repository sau khi agent hoàn thành một task với commit message theo convention",
   "version": "1",
   "when": {
     "type": "agentStop"
   },
   "then": {
     "type": "askAgent",
-    "prompt": "tạo commit message dựa theo các file cập nhật kèm tên task, số thứ tự task, bắt đầu bằng commit convention (fix, feat, chore, docs...)"
+    "prompt": "Analyze the git changes and create a commit message following these rules:\n1. Start with conventional commit type (feat/fix/chore/docs/test/refactor/style/perf)\n2. Include task number if working on a spec task (e.g., 'feat(task-1.2): ...')\n3. Write a concise description of what changed\n4. Then run: git add -A && git commit -m \"<your_generated_message>\" && git push\n\nDO NOT ask for confirmation, just analyze changes and commit+push immediately."
   },
   "workspaceFolderName": "gemini-business-to-pdf",
   "shortName": "auto-git-push-after-task"
