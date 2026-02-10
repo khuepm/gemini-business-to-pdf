@@ -165,43 +165,43 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7_
 
 
-- [~] 7. Triển khai Title Extractor
-  - [~] 7.1 Tạo TitleExtractor class với method extractTitle
+- [x] 7. Triển khai Title Extractor
+  - [x] 7.1 Tạo TitleExtractor class với method extractTitle
     - Tìm title element trong DOM bằng selector
     - Extract textContent hoặc innerText
     - Return string hoặc null nếu không tìm thấy
     - _Requirements: 4.1_
   
-  - [~] 7.2 Viết property test cho extractTitle
+  - [x] 7.2 Viết property test cho extractTitle
     - **Property 10: Trích xuất title thành công**
     - **Validates: Requirements 4.1**
     - Generate random DOM states với và không có title
     - Verify title được extract chính xác
   
-  - [~] 7.3 Implement method sanitizeFilename
+  - [x] 7.3 Implement method sanitizeFilename
     - Replace invalid characters (/, \, :, *, ?, ", <, >, |) với underscore
     - Trim whitespace
     - Remove multiple consecutive spaces/underscores
     - _Requirements: 4.4_
   
-  - [~] 7.4 Implement method truncateFilename
+  - [x] 7.4 Implement method truncateFilename
     - Truncate ở maxLength (100 characters)
     - Cố gắng cắt ở word boundary
     - _Requirements: 4.5_
   
-  - [~] 7.5 Implement method generateFilename
+  - [x] 7.5 Implement method generateFilename
     - Nếu title tồn tại: sanitize và truncate title
     - Nếu title null/empty: tạo fallback "gemini-chat-[timestamp]"
     - Luôn thêm extension ".pdf"
     - _Requirements: 4.2, 4.3, 4.4, 4.5_
   
-  - [~] 7.6 Viết property test cho generateFilename
+  - [x] 7.6 Viết property test cho generateFilename
     - **Property 11: Filename generation và sanitization**
     - **Validates: Requirements 4.2, 4.4, 4.5**
     - Generate random strings (bao gồm invalid characters, very long strings)
     - Verify filename luôn valid, không có invalid chars, không quá dài
   
-  - [~] 7.7 Viết unit tests cho Title Extractor
+  - [x] 7.7 Viết unit tests cho Title Extractor
     - Test với title bình thường
     - Test với title chứa tất cả invalid characters
     - Test với title rất dài (>100 chars)
