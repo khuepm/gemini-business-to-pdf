@@ -208,34 +208,34 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Test với title null/empty (fallback case)
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
 
-- [~] 8. Triển khai PDF Generator
-  - [~] 8.1 Tạo PDFGenerator class và integrate html2pdf.js library
+- [x] 8. Triển khai PDF Generator
+  - [x] 8.1 Tạo PDFGenerator class và integrate html2pdf.js library
     - Import html2pdf.js
     - Define PDFOptions interface
     - Setup default options (A4, margins, fonts)
     - _Requirements: 5.1_
   
-  - [~] 8.2 Implement method applyStyles
+  - [x] 8.2 Implement method applyStyles
     - Tạo HTML template với PDF_STYLES
     - Wrap messages trong styled containers
     - Thêm header với chat title và export date
     - Distinguish user vs gemini messages với different backgrounds
     - _Requirements: 5.2, 5.4, 5.5_
   
-  - [~] 8.3 Implement method generatePDF
+  - [x] 8.3 Implement method generatePDF
     - Convert ChatContent thành styled HTML
     - Call html2pdf với options
     - Generate PDF blob
     - Call downloadPDF với blob và filename
     - _Requirements: 5.1, 5.3, 5.6_
   
-  - [~] 8.4 Viết property test cho generatePDF
+  - [x] 8.4 Viết property test cho generatePDF
     - **Property 12: HTML to PDF conversion với format preservation**
     - **Validates: Requirements 5.1, 5.3**
     - Generate random HTML content với various formatting
     - Verify PDF được tạo thành công và formatting được preserve
   
-  - [~] 8.5 Implement method downloadPDF
+  - [x] 8.5 Implement method downloadPDF
     - Tạo object URL từ blob
     - Tạo temporary <a> element với download attribute
     - Set href và filename
@@ -243,32 +243,32 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Cleanup: revoke object URL và remove element
     - _Requirements: 5.6_
   
-  - [~] 8.6 Viết property test cho downloadPDF
+  - [x] 8.6 Viết property test cho downloadPDF
     - **Property 13: PDF download với đúng filename**
     - **Validates: Requirements 5.6**
     - Generate random filenames
     - Mock download và verify filename được sử dụng đúng
   
-  - [~] 8.7 Viết unit tests cho PDF Generator
+  - [x] 8.7 Viết unit tests cho PDF Generator
     - Test applyStyles với different message types
     - Test generatePDF với sample content
     - Test downloadPDF trigger
     - Mock html2pdf library
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6_
 
-- [~] 9. Checkpoint - Đảm bảo tất cả tests pass
+- [x] 9. Checkpoint - Đảm bảo tất cả tests pass
   - Chạy tất cả tests cho Content Extractor, Title Extractor, và PDF Generator
   - Fix bất kỳ issues nào được phát hiện
   - Hỏi user nếu có câu hỏi phát sinh
 
 
-- [~] 10. Triển khai Main Controller và tích hợp các thành phần
-  - [~] 10.1 Tạo ExportController class
+- [x] 10. Triển khai Main Controller và tích hợp các thành phần
+  - [x] 10.1 Tạo ExportController class
     - Khởi tạo tất cả dependencies (UIInjector, MessageExpander, ContentExtractor, TitleExtractor, PDFGenerator)
     - Implement initialize method để setup extension khi page load
     - _Requirements: 1.1_
   
-  - [~] 10.2 Implement method handleExport
+  - [x] 10.2 Implement method handleExport
     - Orchestrate toàn bộ export flow:
       1. Show loading và disable button
       2. Expand all messages
@@ -280,12 +280,12 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Luôn cleanup trong finally block
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 3.1, 3.2, 3.3, 4.1, 4.2, 5.1, 5.6, 5.7, 6.1, 6.2, 6.5_
   
-  - [~] 10.3 Wire up button click event
+  - [x] 10.3 Wire up button click event
     - Attach handleExport to export button click event
     - Prevent multiple simultaneous exports
     - _Requirements: 1.1, 6.2_
   
-  - [~] 10.4 Viết property tests cho ExportController
+  - [x] 10.4 Viết property tests cho ExportController
     - **Property 14: Button disabled trong khi processing**
     - **Validates: Requirements 6.2**
     - **Property 15: Error handling với message cụ thể**
@@ -293,7 +293,7 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - **Property 16: Button re-enabled sau completion**
     - **Validates: Requirements 6.5**
   
-  - [~] 10.5 Viết integration tests cho complete export flow
+  - [x] 10.5 Viết integration tests cho complete export flow
     - Test end-to-end flow từ button click đến PDF download
     - Mock DOM của Gemini Business
     - Mock html2pdf library
