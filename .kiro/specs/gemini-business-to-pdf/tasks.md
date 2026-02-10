@@ -119,21 +119,21 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
   - Fix bất kỳ issues nào được phát hiện
   - Hỏi user nếu có câu hỏi phát sinh
 
-- [~] 6. Triển khai Content Extractor
-  - [~] 6.1 Tạo ContentExtractor class với method extractChatContent
+- [x] 6. Triển khai Content Extractor
+  - [x] 6.1 Tạo ContentExtractor class với method extractChatContent
     - Tìm chat container trong DOM
     - Iterate qua tất cả message elements
     - Extract từng message bằng extractMessage method
     - Return ChatContent object với array of messages
     - _Requirements: 3.1_
   
-  - [~] 6.2 Viết property test cho extractChatContent
+  - [x] 6.2 Viết property test cho extractChatContent
     - **Property 6: Trích xuất tất cả messages**
     - **Validates: Requirements 3.1**
     - Generate random chat containers với varying số lượng messages
     - Verify tất cả messages được extract
   
-  - [~] 6.3 Implement method extractMessage
+  - [x] 6.3 Implement method extractMessage
     - Clone message element để tránh modify DOM gốc
     - Extract HTML content (innerHTML hoặc outerHTML)
     - Identify sender bằng identifySender method
@@ -141,12 +141,12 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Return Message object
     - _Requirements: 3.2, 3.3, 3.7_
   
-  - [~] 6.4 Implement method identifySender
+  - [x] 6.4 Implement method identifySender
     - Check classes/attributes của message element
     - Return 'user' hoặc 'gemini'
     - _Requirements: 3.7_
   
-  - [~] 6.5 Viết property tests cho Content Extractor
+  - [x] 6.5 Viết property tests cho Content Extractor
     - **Property 7: Bảo toàn HTML structure**
     - **Validates: Requirements 3.2**
     - **Property 8: Bảo toàn tất cả formatting**
@@ -156,7 +156,7 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Generate random HTML với various formatting (bold, italic, code, tables, lists)
     - Verify structure và formatting được preserve
   
-  - [~] 6.6 Viết unit tests cho Content Extractor
+  - [x] 6.6 Viết unit tests cho Content Extractor
     - Test với empty chat
     - Test với messages chứa code blocks
     - Test với messages chứa tables
