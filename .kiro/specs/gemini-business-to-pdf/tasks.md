@@ -114,7 +114,7 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Test error handling
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
 
-- [ ] 5. Checkpoint - Đảm bảo tất cả tests pass
+- [x] 5. Checkpoint - Đảm bảo tất cả tests pass
   - Chạy tất cả tests đã viết cho Logger, Error Handler, UI Injector, và Message Expander
   - Fix bất kỳ issues nào được phát hiện
   - Hỏi user nếu có câu hỏi phát sinh
