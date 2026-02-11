@@ -66,32 +66,32 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - _Requirements: 1.1, 1.3, 1.4, 6.1, 6.2, 6.3, 6.4, 6.5, 5.7_
 
 
-- [~] 4. Triển khai Message Expander
-  - [~] 4.1 Tạo MessageExpander class với method findCollapsedMessages
+- [x] 4. Triển khai Message Expander
+  - [x] 4.1 Tạo MessageExpander class với method findCollapsedMessages
     - Implement DOM query để tìm tất cả collapsed messages
     - Return array of HTMLElement
     - _Requirements: 2.1_
   
-  - [~] 4.2 Viết property test cho findCollapsedMessages
+  - [x] 4.2 Viết property test cho findCollapsedMessages
     - **Property 1: Tìm tất cả collapsed messages**
     - **Validates: Requirements 2.1**
     - Generate random DOM structures với varying số lượng collapsed messages
     - Verify tất cả collapsed messages được tìm thấy
   
-  - [~] 4.3 Implement method expandMessage
+  - [x] 4.3 Implement method expandMessage
     - Trigger click event trên collapsed message
     - Sử dụng MutationObserver hoặc polling để detect expansion complete
     - Implement timeout (2 seconds)
     - Return Promise<void>
     - _Requirements: 2.2, 2.3_
   
-  - [~] 4.4 Viết property test cho expandMessage
+  - [x] 4.4 Viết property test cho expandMessage
     - **Property 2: Mở rộng messages thành công**
     - **Validates: Requirements 2.2**
     - Generate random collapsed messages
     - Verify message state changes sau expand
   
-  - [~] 4.5 Implement method expandAllMessages
+  - [x] 4.5 Implement method expandAllMessages
     - Lưu scroll position hiện tại
     - Iterate qua tất cả collapsed messages và expand
     - Restore scroll position sau khi hoàn tất
@@ -99,7 +99,7 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Return ExpandResult với statistics
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
   
-  - [~] 4.6 Viết property tests cho expandAllMessages
+  - [x] 4.6 Viết property tests cho expandAllMessages
     - **Property 3: Đợi tất cả messages mở rộng**
     - **Validates: Requirements 2.3**
     - **Property 4: Xử lý lỗi expansion gracefully**
@@ -107,14 +107,14 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - **Property 5: Bảo toàn scroll position**
     - **Validates: Requirements 2.5**
   
-  - [~] 4.7 Viết unit tests cho Message Expander
+  - [x] 4.7 Viết unit tests cho Message Expander
     - Test với empty chat (no collapsed messages)
     - Test với 1 collapsed message
     - Test timeout scenario
     - Test error handling
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
 
-- [~] 5. Checkpoint - Đảm bảo tất cả tests pass
+- [x] 5. Checkpoint - Đảm bảo tất cả tests pass
   - Chạy tất cả tests đã viết cho Logger, Error Handler, UI Injector, và Message Expander
   - Fix bất kỳ issues nào được phát hiện
   - Hỏi user nếu có câu hỏi phát sinh
