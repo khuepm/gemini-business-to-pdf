@@ -140,10 +140,16 @@ export class PDFGenerator {
         console.warn(`[PDFGenerator] Warning: Message ${index + 1} has empty content!`);
       }
 
+      // Clean the content: remove data-markdown-start-index attributes that might cause issues
+      const cleanContent = message.content
+        .replace(/data-markdown-start-index="\d+"/g, '')
+        .replace(/<span>\s*<\/span>/g, '') // Remove empty spans
+        .trim();
+
       return `
         <div class="message ${senderClass}">
           <div class="message-header">${senderLabel}</div>
-          <div class="message-content">${message.content}</div>
+          <div class="message-content">${cleanContent}</div>
         </div>
       `;
     }).join('\n');
@@ -189,6 +195,11 @@ export class PDFGenerator {
 
         .message-content {
           color: #333;
+          word-wrap: break-word;
+        }
+
+        .message-content p {
+          margin: 8px 0;
         }
 
         .message-content code {
