@@ -19,8 +19,8 @@ import { Logger } from '../utils/logger';
  */
 function isGeminiBusinessDomain(): boolean {
   const currentUrl = window.location.href;
-  // Match https://gemini.google.com with optional trailing slash, path, or query
-  const geminiBusinessPattern = /^https:\/\/gemini\.google\.com(\/|\?|$)/;
+  // Match https://business.gemini.google with optional trailing slash, path, or query
+  const geminiBusinessPattern = /^https:\/\/business\.gemini\.google(\/|\?|$)/;
   
   return geminiBusinessPattern.test(currentUrl);
 }

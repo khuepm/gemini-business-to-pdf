@@ -7,11 +7,11 @@
     "activeTab"
   ],
   "host_permissions": [
-    "https://gemini.google.com/*"
+    "https://business.gemini.google/*"
   ],
   "content_scripts": [
     {
-      "matches": ["https://gemini.google.com/*"],
+      "matches": ["https://business.gemini.google/*"],
       "js": ["content.js"],
       "css": ["styles/button.css"],
       "run_at": "document_idle"
