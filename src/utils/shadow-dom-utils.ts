@@ -154,6 +154,7 @@ export function getAllConversationTitles(): Array<{ title: string; isSelected: b
 
 /**
  * Gets the header element where we can inject the export button
+ * Now targets the customer-logo-container to place button next to Gemini Business logo
  */
 export function getHeaderElement(): HTMLElement | null {
   try {
@@ -161,26 +162,39 @@ export function getHeaderElement(): HTMLElement | null {
     const app = document.querySelector("body > ucs-standalone-app") as HTMLElement & { shadowRoot: ShadowRoot };
     if (!app?.shadowRoot) return null;
 
-    // Try full path with all classes
-    const header = app.shadowRoot.querySelector(
-      "div > div.ucs-standalone-outer-row-container > div > div.ucs-standalone-header.is-nav-panel-enabled.format-header.is-chat-mode > div.header-actions.margin-end"
+    // Try to get the customer-logo-container (next to Gemini Business logo)
+    const logoContainer = app.shadowRoot.querySelector(
+      "div > div.ucs-standalone-outer-row-container > div > div.ucs-standalone-header.is-nav-panel-enabled.format-header.is-chat-mode > div.customer-logo-container.static"
     ) as HTMLElement;
     
-    if (header) {
-      return header;
+    if (logoContainer) {
+      console.log('[getHeaderElement] Found customer-logo-container');
+      return logoContainer;
     }
 
     // Fallback: try without all the specific classes
     const headerFallback = app.shadowRoot.querySelector(
-      "div > div.ucs-standalone-outer-row-container > div > div.ucs-standalone-header > div.header-actions"
+      "div > div.ucs-standalone-outer-row-container > div > div.ucs-standalone-header > div.customer-logo-container"
     ) as HTMLElement;
     
     if (headerFallback) {
+      console.log('[getHeaderElement] Found customer-logo-container (fallback)');
       return headerFallback;
     }
 
-    // Last fallback: try to find any header-actions
-    const anyHeader = app.shadowRoot.querySelector("div.header-actions") as HTMLElement;
+    // Try header-actions as another fallback
+    const headerActions = app.shadowRoot.querySelector(
+      "div > div.ucs-standalone-outer-row-container > div > div.ucs-standalone-header > div.header-actions"
+    ) as HTMLElement;
+    
+    if (headerActions) {
+      console.log('[getHeaderElement] Found header-actions');
+      return headerActions;
+    }
+
+    // Last fallback: try to find any header element
+    const anyHeader = app.shadowRoot.querySelector("div.ucs-standalone-header") as HTMLElement;
+    console.log('[getHeaderElement] Using fallback header:', !!anyHeader);
     return anyHeader || document.body;
   } catch (error) {
     console.error("Error getting header element:", error);
