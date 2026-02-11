@@ -202,17 +202,27 @@ export class ContentExtractor {
       if (sender === 'user') {
         // Extract user message content from ucs-fast-markdown
         content = extractUserMessageContent(messageElement);
+        Logger.info(`User message content extracted: ${content.substring(0, 100)}...`);
       } else {
         // Extract gemini response content from ucs-summary
         content = extractGeminiResponseContent(messageElement);
+        Logger.info(`Gemini message content extracted: ${content.substring(0, 100)}...`);
       }
 
       // If content is still empty, try fallback methods
       if (!content.trim()) {
+        Logger.warn('Content is empty, trying fallback methods');
         if (messageElement.shadowRoot) {
           content = messageElement.shadowRoot.textContent || '';
+          Logger.info(`Fallback shadowRoot textContent: ${content.substring(0, 100)}...`);
         } else {
           content = messageElement.textContent || '';
+          Logger.info(`Fallback textContent: ${content.substring(0, 100)}...`);
+        }
+        
+        // If still empty, log warning
+        if (!content.trim()) {
+          Logger.warn('Content is still empty after all fallback attempts');
         }
       }
 
@@ -233,7 +243,7 @@ export class ContentExtractor {
         metadata
       };
 
-      Logger.info(`Message extracted: sender=${sender}, hasCode=${metadata.hasCodeBlock}, hasTable=${metadata.hasTable}, hasList=${metadata.hasList}`);
+      Logger.info(`Message extracted: sender=${sender}, contentLength=${content.length}, hasCode=${metadata.hasCodeBlock}, hasTable=${metadata.hasTable}, hasList=${metadata.hasList}`);
       return message;
 
     } catch (error) {

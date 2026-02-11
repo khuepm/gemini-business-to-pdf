@@ -12,10 +12,12 @@ export default defineConfig({
       output: {
         entryFileNames: '[name].js',
         format: 'iife',
+        manualChunks: undefined, // Disable chunking for Chrome extension
       },
     },
     minify: 'esbuild',
     sourcemap: false,
+    chunkSizeWarningLimit: 1000, // Increase limit for Chrome extensions
   },
   resolve: {
     alias: {

@@ -2,6 +2,9 @@
 
 Chrome extension cho phép xuất toàn bộ cuộc trò chuyện từ Gemini Business thành file PDF với định dạng đẹp và dễ đọc.
 
+[![Build Extension](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/build.yml/badge.svg)](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/build.yml)
+[![Release](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/release.yml/badge.svg)](https://github.com/YOUR_USERNAME/YOUR_REPO/actions/workflows/release.yml)
+
 ## Mô Tả
 
 Gemini Business to PDF là một Chrome extension giúp bạn lưu trữ và chia sẻ các cuộc trò chuyện với Gemini AI một cách dễ dàng. Extension tự động mở rộng các tin nhắn bị thu nhỏ, giữ nguyên toàn bộ định dạng (bold, italic, code blocks, tables, lists), và tạo file PDF với tên thông minh dựa trên tiêu đề cuộc trò chuyện.
@@ -17,6 +20,31 @@ Gemini Business to PDF là một Chrome extension giúp bạn lưu trữ và chi
 
 ## Cài Đặt (Installation)
 
+📖 **[Xem hướng dẫn chi tiết tại docs/INSTALLATION.md](docs/INSTALLATION.md)**
+
+### Cài đặt nhanh từ Source Code
+
+```bash
+# Clone repository
+git clone https://github.com/yourusername/gemini-business-to-pdf.git
+cd gemini-business-to-pdf
+
+# Cài đặt và build
+npm install
+npm run build
+
+# Load extension vào Chrome
+# 1. Mở chrome://extensions/
+# 2. Bật "Developer mode"
+# 3. Click "Load unpacked" và chọn thư mục dist
+```
+
+### Cài đặt từ GitHub Release
+
+1. Tải file ZIP từ [Releases](https://github.com/yourusername/gemini-business-to-pdf/releases)
+2. Giải nén file
+3. Load vào Chrome như hướng dẫn trên
+
 ### Cài Đặt Từ Chrome Web Store
 
 *(Sẽ có sẵn sau khi extension được publish)*
@@ -25,6 +53,36 @@ Gemini Business to PDF là một Chrome extension giúp bạn lưu trữ và chi
 2. Tìm kiếm "Gemini Business to PDF"
 3. Click "Add to Chrome"
 4. Xác nhận cài đặt
+
+## CI/CD với GitHub Actions
+
+Project sử dụng GitHub Actions để tự động build và release:
+
+- **Build Workflow** (`.github/workflows/build.yml`): 
+  - Tự động chạy khi push/PR vào branch main/develop
+  - Chạy tests và build extension
+  - Upload artifacts để download
+
+- **Release Workflow** (`.github/workflows/release.yml`):
+  - Tự động chạy khi push tag (vd: `v1.0.0`)
+  - Build và tạo GitHub Release
+  - Đính kèm file ZIP để download
+
+### Tạo Release mới
+
+```bash
+# Cập nhật version trong package.json và manifest.json
+# Commit changes
+git add .
+git commit -m "Bump version to 1.0.1"
+
+# Tạo và push tag
+git tag v1.0.1
+git push origin main
+git push origin v1.0.1
+```
+
+GitHub Actions sẽ tự động build và tạo release.
 
 ### Cài Đặt Từ Source Code (Dành Cho Developer)
 

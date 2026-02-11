@@ -188,23 +188,39 @@ export function extractUserMessageContent(userMessage: HTMLElement): string {
     if (userMessage.shadowRoot) {
       // Try to get full content from div > div (not just p tag)
       const fullContent = userMessage.shadowRoot.querySelector('div > div');
-      if (fullContent) {
+      if (fullContent && fullContent.innerHTML.trim()) {
         return fullContent.innerHTML;
       }
       
       // Fallback: try p tag
       const pContent = userMessage.shadowRoot.querySelector('div > div > p');
-      if (pContent) {
+      if (pContent && pContent.innerHTML.trim()) {
         return pContent.innerHTML;
       }
       
-      // Fallback: get all content from shadow root
-      return userMessage.shadowRoot.querySelector('div')?.innerHTML || '';
+      // Fallback: try any div with content
+      const anyDiv = userMessage.shadowRoot.querySelector('div');
+      if (anyDiv && anyDiv.innerHTML.trim()) {
+        return anyDiv.innerHTML;
+      }
+      
+      // Last fallback: get text content from shadow root
+      const textContent = userMessage.shadowRoot.textContent?.trim();
+      if (textContent) {
+        return textContent;
+      }
     }
-    return userMessage.textContent || '';
+    
+    // If no shadow root, try regular content
+    const innerHTML = userMessage.innerHTML.trim();
+    if (innerHTML) {
+      return innerHTML;
+    }
+    
+    return userMessage.textContent?.trim() || '';
   } catch (error) {
     console.error('Error extracting user message content:', error);
-    return userMessage.textContent || '';
+    return userMessage.textContent?.trim() || '';
   }
 }
 
@@ -225,20 +241,51 @@ export function extractGeminiResponseContent(geminiResponse: HTMLElement): strin
           
           if (fastMarkdown?.shadowRoot) {
             const content = fastMarkdown.shadowRoot.querySelector('div > div');
-            if (content) {
+            if (content && content.innerHTML.trim()) {
               return content.innerHTML;
+            }
+            
+            // Try just div
+            const divContent = fastMarkdown.shadowRoot.querySelector('div');
+            if (divContent && divContent.innerHTML.trim()) {
+              return divContent.innerHTML;
             }
           }
         }
       }
       
+      // Fallback: try simpler paths
+      const summaryDiv = geminiResponse.shadowRoot.querySelector('div.summary-contents');
+      if (summaryDiv) {
+        const innerHTML = summaryDiv.innerHTML.trim();
+        if (innerHTML) {
+          return innerHTML;
+        }
+      }
+      
+      // Try any div with content
+      const anyDiv = geminiResponse.shadowRoot.querySelector('div');
+      if (anyDiv && anyDiv.innerHTML.trim()) {
+        return anyDiv.innerHTML;
+      }
+      
       // Fallback: try to get text content
-      return geminiResponse.shadowRoot.textContent || '';
+      const textContent = geminiResponse.shadowRoot.textContent?.trim();
+      if (textContent) {
+        return textContent;
+      }
     }
-    return geminiResponse.textContent || '';
+    
+    // If no shadow root, try regular content
+    const innerHTML = geminiResponse.innerHTML.trim();
+    if (innerHTML) {
+      return innerHTML;
+    }
+    
+    return geminiResponse.textContent?.trim() || '';
   } catch (error) {
     console.error('Error extracting gemini response content:', error);
-    return geminiResponse.textContent || '';
+    return geminiResponse.textContent?.trim() || '';
   }
 }
 
