@@ -45,30 +45,38 @@ export function getConversationTurns(): HTMLElement[] {
 /**
  * Gets all message elements from the chat container
  * Returns both user messages and gemini responses
+ * Each turn contains: user message (ucs-fast-markdown) and gemini response (ucs-summary)
  */
 export function getMessageElements(): HTMLElement[] {
   const container = getChatContainer();
-  if (!container) return [];
+  if (!container) {
+    console.warn('[getMessageElements] Chat container not found');
+    return [];
+  }
 
   const messages: HTMLElement[] = [];
   
-  // Get all conversation turns
+  // Get all conversation turns (div.turn)
   const turns = container.querySelectorAll('div.turn');
+  console.log(`[getMessageElements] Found ${turns.length} turns`);
   
   for (const turn of turns) {
-    // Find user message (ucs-fast-markdown)
+    // Find user message (ucs-fast-markdown) - usually in div > div > div > ucs-fast-markdown
     const userMessage = turn.querySelector('ucs-fast-markdown');
     if (userMessage) {
+      console.log('[getMessageElements] Found user message in turn');
       messages.push(userMessage as HTMLElement);
     }
     
     // Find gemini response (ucs-summary)
     const geminiResponse = turn.querySelector('ucs-summary');
     if (geminiResponse) {
+      console.log('[getMessageElements] Found gemini response in turn');
       messages.push(geminiResponse as HTMLElement);
     }
   }
   
+  console.log(`[getMessageElements] Total messages found: ${messages.length}`);
   return messages;
 }
 
@@ -182,31 +190,45 @@ export function getHeaderElement(): HTMLElement | null {
 
 /**
  * Extracts content from a user message element (ucs-fast-markdown)
+ * Path: ucs-fast-markdown -> shadowRoot -> div > div > p (or div > div for full content)
  */
 export function extractUserMessageContent(userMessage: HTMLElement): string {
   try {
     if (userMessage.shadowRoot) {
-      // Try to get full content from div > div (not just p tag)
+      // Primary: Get full content from div > div (contains all content including multiple paragraphs)
       const fullContent = userMessage.shadowRoot.querySelector('div > div');
-      if (fullContent && fullContent.innerHTML.trim()) {
-        return fullContent.innerHTML;
+      if (fullContent) {
+        const innerHTML = fullContent.innerHTML.trim();
+        if (innerHTML) {
+          console.log('[extractUserMessageContent] Extracted from div > div:', innerHTML.substring(0, 100));
+          return innerHTML;
+        }
       }
       
-      // Fallback: try p tag
+      // Fallback 1: try p tag only (might be truncated)
       const pContent = userMessage.shadowRoot.querySelector('div > div > p');
-      if (pContent && pContent.innerHTML.trim()) {
-        return pContent.innerHTML;
+      if (pContent) {
+        const innerHTML = pContent.innerHTML.trim();
+        if (innerHTML) {
+          console.log('[extractUserMessageContent] Extracted from p tag:', innerHTML.substring(0, 100));
+          return innerHTML;
+        }
       }
       
-      // Fallback: try any div with content
+      // Fallback 2: try any div with content
       const anyDiv = userMessage.shadowRoot.querySelector('div');
-      if (anyDiv && anyDiv.innerHTML.trim()) {
-        return anyDiv.innerHTML;
+      if (anyDiv) {
+        const innerHTML = anyDiv.innerHTML.trim();
+        if (innerHTML) {
+          console.log('[extractUserMessageContent] Extracted from any div:', innerHTML.substring(0, 100));
+          return innerHTML;
+        }
       }
       
-      // Last fallback: get text content from shadow root
+      // Fallback 3: get text content from shadow root
       const textContent = userMessage.shadowRoot.textContent?.trim();
       if (textContent) {
+        console.log('[extractUserMessageContent] Extracted from textContent:', textContent.substring(0, 100));
         return textContent;
       }
     }
@@ -214,10 +236,13 @@ export function extractUserMessageContent(userMessage: HTMLElement): string {
     // If no shadow root, try regular content
     const innerHTML = userMessage.innerHTML.trim();
     if (innerHTML) {
+      console.log('[extractUserMessageContent] Extracted from innerHTML (no shadow):', innerHTML.substring(0, 100));
       return innerHTML;
     }
     
-    return userMessage.textContent?.trim() || '';
+    const textContent = userMessage.textContent?.trim() || '';
+    console.log('[extractUserMessageContent] Fallback to textContent:', textContent.substring(0, 100));
+    return textContent;
   } catch (error) {
     console.error('Error extracting user message content:', error);
     return userMessage.textContent?.trim() || '';
@@ -226,11 +251,13 @@ export function extractUserMessageContent(userMessage: HTMLElement): string {
 
 /**
  * Extracts content from a gemini response element (ucs-summary)
+ * Path: ucs-summary -> shadowRoot -> div > div > div.summary-contents > div.summary > ucs-text-streamer 
+ *       -> shadowRoot -> ucs-response-markdown -> shadowRoot -> ucs-fast-markdown -> shadowRoot -> div > div
  */
 export function extractGeminiResponseContent(geminiResponse: HTMLElement): string {
   try {
     if (geminiResponse.shadowRoot) {
-      // Navigate through nested shadow roots
+      // Primary path: Navigate through nested shadow roots
       const summaryContents = geminiResponse.shadowRoot.querySelector('div > div > div.summary-contents > div.summary > ucs-text-streamer') as HTMLElement & { shadowRoot: ShadowRoot };
       
       if (summaryContents?.shadowRoot) {
@@ -240,38 +267,53 @@ export function extractGeminiResponseContent(geminiResponse: HTMLElement): strin
           const fastMarkdown = responseMarkdown.shadowRoot.querySelector('ucs-fast-markdown') as HTMLElement & { shadowRoot: ShadowRoot };
           
           if (fastMarkdown?.shadowRoot) {
+            // Get full content from div > div
             const content = fastMarkdown.shadowRoot.querySelector('div > div');
-            if (content && content.innerHTML.trim()) {
-              return content.innerHTML;
+            if (content) {
+              const innerHTML = content.innerHTML.trim();
+              if (innerHTML) {
+                console.log('[extractGeminiResponseContent] Extracted from nested shadow DOM:', innerHTML.substring(0, 100));
+                return innerHTML;
+              }
             }
             
             // Try just div
             const divContent = fastMarkdown.shadowRoot.querySelector('div');
-            if (divContent && divContent.innerHTML.trim()) {
-              return divContent.innerHTML;
+            if (divContent) {
+              const innerHTML = divContent.innerHTML.trim();
+              if (innerHTML) {
+                console.log('[extractGeminiResponseContent] Extracted from div:', innerHTML.substring(0, 100));
+                return innerHTML;
+              }
             }
           }
         }
       }
       
-      // Fallback: try simpler paths
+      // Fallback 1: try simpler paths - summary-contents
       const summaryDiv = geminiResponse.shadowRoot.querySelector('div.summary-contents');
       if (summaryDiv) {
         const innerHTML = summaryDiv.innerHTML.trim();
         if (innerHTML) {
+          console.log('[extractGeminiResponseContent] Extracted from summary-contents:', innerHTML.substring(0, 100));
           return innerHTML;
         }
       }
       
-      // Try any div with content
+      // Fallback 2: try any div with content
       const anyDiv = geminiResponse.shadowRoot.querySelector('div');
-      if (anyDiv && anyDiv.innerHTML.trim()) {
-        return anyDiv.innerHTML;
+      if (anyDiv) {
+        const innerHTML = anyDiv.innerHTML.trim();
+        if (innerHTML) {
+          console.log('[extractGeminiResponseContent] Extracted from any div:', innerHTML.substring(0, 100));
+          return innerHTML;
+        }
       }
       
-      // Fallback: try to get text content
+      // Fallback 3: try to get text content
       const textContent = geminiResponse.shadowRoot.textContent?.trim();
       if (textContent) {
+        console.log('[extractGeminiResponseContent] Extracted from textContent:', textContent.substring(0, 100));
         return textContent;
       }
     }
@@ -279,10 +321,13 @@ export function extractGeminiResponseContent(geminiResponse: HTMLElement): strin
     // If no shadow root, try regular content
     const innerHTML = geminiResponse.innerHTML.trim();
     if (innerHTML) {
+      console.log('[extractGeminiResponseContent] Extracted from innerHTML (no shadow):', innerHTML.substring(0, 100));
       return innerHTML;
     }
     
-    return geminiResponse.textContent?.trim() || '';
+    const textContent = geminiResponse.textContent?.trim() || '';
+    console.log('[extractGeminiResponseContent] Fallback to textContent:', textContent.substring(0, 100));
+    return textContent;
   } catch (error) {
     console.error('Error extracting gemini response content:', error);
     return geminiResponse.textContent?.trim() || '';
