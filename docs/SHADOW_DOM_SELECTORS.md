@@ -22,12 +22,26 @@ document.querySelector("body > ucs-standalone-app")
 ### User Message (Câu hỏi của người dùng)
 ```javascript
 // Element: ucs-fast-markdown
-// Path to content:
+// Path to content (CẬP NHẬT: lấy div > div thay vì div > div > p để có đầy đủ nội dung):
 document.querySelector("body > ucs-standalone-app")
   .shadowRoot.querySelector("div > div.ucs-standalone-outer-row-container > div > div.search-bar-and-results-container > div > ucs-results")
   .shadowRoot.querySelector("div > div > div.tile.chat-mode-conversation.chat-mode-conversation > div.chat-mode-scroller.tile-content > ucs-conversation")
   .shadowRoot.querySelector("div > div.turn.last > div > div > div > ucs-fast-markdown")
-  .shadowRoot.querySelector("div > div > p")
+  .shadowRoot.querySelector("div > div")  // Lấy div > div để có toàn bộ nội dung
+```
+
+### Gemini Response (Câu trả lời của Gemini)
+```javascript
+// Element: ucs-summary
+// Path to content (nested shadow roots):
+document.querySelector("body > ucs-standalone-app")
+  .shadowRoot.querySelector("div > div.ucs-standalone-outer-row-container > div > div.search-bar-and-results-container > div > ucs-results")
+  .shadowRoot.querySelector("div > div > div.tile.chat-mode-conversation.chat-mode-conversation > div.chat-mode-scroller.tile-content > ucs-conversation")
+  .shadowRoot.querySelector("div > div.turn.last > ucs-summary")
+  .shadowRoot.querySelector("div > div > div.summary-contents > div.summary > ucs-text-streamer")
+  .shadowRoot.querySelector("ucs-response-markdown")
+  .shadowRoot.querySelector("ucs-fast-markdown")
+  .shadowRoot.querySelector("div > div")
 ```
 
 ### Chat Title (Tiêu đề cuộc trò chuyện)
@@ -47,17 +61,12 @@ document.querySelector("body > ucs-standalone-app")
   .shadowRoot.querySelector("div > div.ucs-standalone-outer-row-container > ucs-nav-panel")
   .shadowRoot.querySelector("div > div.sections-container > div.conversation-list > div:nth-child(3) > div > button.list-item.selected > div.conversation-title")
 ```
+
+### Header Container (Nơi inject export button)
 ```javascript
-// Element: ucs-summary
-// Path to content (nested shadow roots):
+// Header actions container - nơi tốt nhất để inject export button
 document.querySelector("body > ucs-standalone-app")
-  .shadowRoot.querySelector("div > div.ucs-standalone-outer-row-container > div > div.search-bar-and-results-container > div > ucs-results")
-  .shadowRoot.querySelector("div > div > div.tile.chat-mode-conversation.chat-mode-conversation > div.chat-mode-scroller.tile-content > ucs-conversation")
-  .shadowRoot.querySelector("div > div.turn.last > ucs-summary")
-  .shadowRoot.querySelector("div > div > div.summary-contents > div.summary > ucs-text-streamer")
-  .shadowRoot.querySelector("ucs-response-markdown")
-  .shadowRoot.querySelector("ucs-fast-markdown")
-  .shadowRoot.querySelector("div > div")
+  .shadowRoot.querySelector("div > div.ucs-standalone-outer-row-container > div > div.ucs-standalone-header.is-nav-panel-enabled.format-header.is-chat-mode > div.header-actions.margin-end")
 ```
 
 ## Các Selectors Đã Xác Định
@@ -152,26 +161,53 @@ document.querySelector("body > ucs-standalone-app")
 
 ---
 
-### 4. Header Container (Nơi inject button) ⚠️
-**Vị trí:** Thường ở ngoài Shadow DOM, ở top của page
+### 4. Header Container (Nơi inject button) ✅
+**Vị trí:** Trong Shadow DOM của ucs-standalone-app
 
-**Cần xác định:**
-- Selector cho header/toolbar element
-- Vị trí tốt nhất để inject export button
+**Đã xác định:**
+- Container: `div.header-actions.margin-end` trong header
+- Path: `ucs-standalone-app` > shadowRoot > header > `div.header-actions`
 
-**Cập nhật trong file:** `src/utils/shadow-dom-utils.ts` - function `getHeaderElement()`
-
-**Hiện tại (placeholder):**
-```javascript
-const selectors = [
-  'header',
-  '[role="banner"]',
-  '.header',
-  '.top-bar'
-];
+**Cấu trúc:**
+```
+ucs-standalone-app
+└── shadowRoot
+    └── div > div.ucs-standalone-outer-row-container > div
+        └── div.ucs-standalone-header.is-nav-panel-enabled.format-header.is-chat-mode
+            └── div.header-actions.margin-end (inject button here)
 ```
 
-**TODO:** Inspect để tìm vị trí tốt nhất cho button
+**Path đầy đủ:**
+```javascript
+document.querySelector("body > ucs-standalone-app")
+  .shadowRoot.querySelector("div > div.ucs-standalone-outer-row-container > div > div.ucs-standalone-header.is-nav-panel-enabled.format-header.is-chat-mode > div.header-actions.margin-end")
+```
+
+**Lưu ý:**
+- Header có nhiều classes động (is-nav-panel-enabled, is-chat-mode)
+- Nên có fallback selector đơn giản hơn: `div.header-actions`
+
+**Đã implement trong:** `src/utils/shadow-dom-utils.ts` - `getHeaderElement()`
+
+---
+
+## Cải Tiến User Message Extraction
+
+**Vấn đề:** User message không đầy đủ khi chỉ lấy từ `p` tag
+
+**Giải pháp:** Lấy từ `div > div` để có toàn bộ nội dung
+
+**Path cũ (không đầy đủ):**
+```javascript
+userMessage.shadowRoot.querySelector('div > div > p')
+```
+
+**Path mới (đầy đủ):**
+```javascript
+userMessage.shadowRoot.querySelector('div > div')
+```
+
+**Đã cập nhật trong:** `src/utils/shadow-dom-utils.ts` - `extractUserMessageContent()`
 
 ---
 
@@ -180,13 +216,15 @@ const selectors = [
 - [x] Xác định selector cho message elements
 - [x] Xác định cách phân biệt user vs gemini messages
 - [x] Implement extraction functions cho user và gemini messages
+- [x] Fix user message extraction để lấy đầy đủ nội dung (div > div thay vì p)
 - [x] Xác định selector cho chat title
 - [x] Implement getChatTitleElement() function
-- [ ] Xác định selector cho collapsed messages
-- [ ] Xác định element để click expand
-- [ ] Xác định selector cho header container
-- [x] Cập nhật `src/utils/shadow-dom-utils.ts` với message và title selectors
-- [ ] Test extraction functions với data thực tế
+- [x] Xác định selector cho header container
+- [x] Implement getHeaderElement() function
+- [ ] Xác định selector cho collapsed messages (nếu có)
+- [ ] Xác định element để click expand (nếu có)
+- [x] Cập nhật `src/utils/shadow-dom-utils.ts` với tất cả selectors
+- [ ] Test extension trên trang thực tế
 - [ ] Verify tất cả chức năng hoạt động đúng
 
 ---
@@ -271,7 +309,26 @@ if (geminiResponses.length > 0) {
 }
 
 // ============================================
-// Test 5: Chat Title
+// Test 5: Header Container
+// ============================================
+const appForHeader = document.querySelector("body > ucs-standalone-app");
+if (appForHeader?.shadowRoot) {
+  const header = appForHeader.shadowRoot.querySelector(
+    "div > div.ucs-standalone-outer-row-container > div > div.ucs-standalone-header.is-nav-panel-enabled.format-header.is-chat-mode > div.header-actions.margin-end"
+  );
+  
+  if (header) {
+    console.log('✅ Found header container for button injection');
+    console.log('Header element:', header);
+  } else {
+    console.log('⚠️ Header not found with full path, trying fallback...');
+    const headerFallback = appForHeader.shadowRoot.querySelector("div.header-actions");
+    console.log('Fallback header:', headerFallback);
+  }
+}
+
+// ============================================
+// Test 6: Chat Title
 // ============================================
 const app = document.querySelector("body > ucs-standalone-app");
 if (app?.shadowRoot) {

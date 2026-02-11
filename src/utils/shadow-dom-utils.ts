@@ -148,21 +148,36 @@ export function getAllConversationTitles(): Array<{ title: string; isSelected: b
  * Gets the header element where we can inject the export button
  */
 export function getHeaderElement(): HTMLElement | null {
-  // Try to find header outside Shadow DOM first
-  const selectors = [
-    'header',
-    '[role="banner"]',
-    '.header',
-    '.top-bar'
-  ];
+  try {
+    // Navigate to header in Shadow DOM
+    const app = document.querySelector("body > ucs-standalone-app") as HTMLElement & { shadowRoot: ShadowRoot };
+    if (!app?.shadowRoot) return null;
 
-  for (const selector of selectors) {
-    const element = document.querySelector(selector) as HTMLElement;
-    if (element) return element;
+    // Try full path with all classes
+    const header = app.shadowRoot.querySelector(
+      "div > div.ucs-standalone-outer-row-container > div > div.ucs-standalone-header.is-nav-panel-enabled.format-header.is-chat-mode > div.header-actions.margin-end"
+    ) as HTMLElement;
+    
+    if (header) {
+      return header;
+    }
+
+    // Fallback: try without all the specific classes
+    const headerFallback = app.shadowRoot.querySelector(
+      "div > div.ucs-standalone-outer-row-container > div > div.ucs-standalone-header > div.header-actions"
+    ) as HTMLElement;
+    
+    if (headerFallback) {
+      return headerFallback;
+    }
+
+    // Last fallback: try to find any header-actions
+    const anyHeader = app.shadowRoot.querySelector("div.header-actions") as HTMLElement;
+    return anyHeader || document.body;
+  } catch (error) {
+    console.error("Error getting header element:", error);
+    return document.body;
   }
-
-  // Fallback: inject at body level
-  return document.body;
 }
 
 /**
@@ -171,10 +186,18 @@ export function getHeaderElement(): HTMLElement | null {
 export function extractUserMessageContent(userMessage: HTMLElement): string {
   try {
     if (userMessage.shadowRoot) {
-      const content = userMessage.shadowRoot.querySelector('div > div > p');
-      if (content) {
-        return content.innerHTML;
+      // Try to get full content from div > div (not just p tag)
+      const fullContent = userMessage.shadowRoot.querySelector('div > div');
+      if (fullContent) {
+        return fullContent.innerHTML;
       }
+      
+      // Fallback: try p tag
+      const pContent = userMessage.shadowRoot.querySelector('div > div > p');
+      if (pContent) {
+        return pContent.innerHTML;
+      }
+      
       // Fallback: get all content from shadow root
       return userMessage.shadowRoot.querySelector('div')?.innerHTML || '';
     }
@@ -257,5 +280,8 @@ export function getCollapsedMessages(): HTMLElement[] {
  */
 export function isGeminiBusinessDomain(): boolean {
   const hostname = window.location.hostname;
-  return hostname.includes('gemini') || hostname.includes('google.com');
+  // Check for Gemini Business domains
+  return hostname.includes('gemini.google') || 
+         hostname.includes('business.gemini') ||
+         (hostname.includes('google.com') && window.location.href.includes('gemini'));
 }
