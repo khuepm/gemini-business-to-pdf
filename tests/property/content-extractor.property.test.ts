@@ -256,7 +256,10 @@ describe('ContentExtractor - Property Tests', () => {
               !formatting.hasLink && !formatting.hasCode && !formatting.hasCodeBlock && 
               !formatting.hasTable && !formatting.hasList) {
             // Plain text case - check the text is in the paragraph
-            expect(message.content).toContain(formatting.text);
+            // HTML special characters will be escaped, so we need to check the text content
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = message.content;
+            expect(tempDiv.textContent).toContain(formatting.text);
           }
           
           // Cleanup

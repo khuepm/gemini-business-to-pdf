@@ -10,7 +10,7 @@
 
 import { UIInjector } from './ui-injector';
 import { MessageExpander } from './message-expander';
-import { ContentExtractor } from './content-extractor';
+import { ContentExtractor, ChatContent } from './content-extractor';
 import { TitleExtractor } from './title-extractor';
 import { PDFGenerator } from './pdf-generator';
 import { Logger } from '../utils/logger';
@@ -122,8 +122,9 @@ export class ExportController implements IExportController {
    * 4. Get title and generate filename
    * 5. Generate and download PDF
    * 6. Show success notification
+   * 7. Cleanup memory
    * 
-   * Validates: Requirements 2.1, 2.2, 2.3, 2.4, 2.5, 3.1, 3.2, 3.3, 4.1, 4.2, 5.1, 5.6, 5.7, 6.1, 6.2, 6.5
+   * Validates: Requirements 2.1, 2.2, 2.3, 2.4, 2.5, 3.1, 3.2, 3.3, 4.1, 4.2, 5.1, 5.6, 5.7, 6.1, 6.2, 6.5, 7.5
    */
   async handleExport(): Promise<void> {
     // Prevent multiple simultaneous exports
@@ -133,6 +134,7 @@ export class ExportController implements IExportController {
     }
 
     this.isExporting = true;
+    let content: ChatContent | null = null;
 
     try {
       // Step 1: Show loading and disable button
@@ -157,7 +159,7 @@ export class ExportController implements IExportController {
 
       // Step 3: Extract content
       this.log('Đang trích xuất nội dung...', 'info');
-      const content = this.contentExtractor.extractChatContent();
+      content = this.contentExtractor.extractChatContent();
       this.log(`Đã trích xuất ${content.messages.length} messages`, 'info');
 
       // Step 4: Get title and generate filename
@@ -178,10 +180,22 @@ export class ExportController implements IExportController {
       // Handle any errors that occur during export
       this.handleError(error as Error);
     } finally {
-      // Step 7: Cleanup - hide loading and enable button
+      // Step 7: Cleanup - hide loading, enable button, and free memory
       this.uiInjector.hideLoading();
       this.uiInjector.enableButton();
+      
+      // Clear references to free memory
+      content = null;
+      
+      // Cleanup PDF generator resources (revoke object URLs)
+      this.pdfGenerator.cleanup();
+      
+      // Cleanup message expander resources (disconnect observers)
+      this.messageExpander.cleanup();
+      
       this.isExporting = false;
+      
+      this.log('Đã giải phóng bộ nhớ', 'info');
     }
   }
 

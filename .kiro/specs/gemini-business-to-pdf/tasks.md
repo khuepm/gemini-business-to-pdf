@@ -301,66 +301,66 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Test error scenarios
     - _Requirements: 2.1, 2.2, 2.3, 3.1, 4.1, 5.1, 5.6, 6.1, 6.2, 6.5_
 
-- [~] 11. Tạo content script entry point
-  - [~] 11.1 Tạo content.ts file
+- [x] 11. Tạo content script entry point
+  - [x] 11.1 Tạo content.ts file
     - Import ExportController
     - Khởi tạo controller khi DOM ready
     - Add event listener cho DOMContentLoaded
     - _Requirements: 1.1, 7.1_
   
-  - [~] 11.2 Implement domain restriction check
+  - [x] 11.2 Implement domain restriction check
     - Verify URL matches Gemini Business domain
     - Chỉ initialize extension nếu đúng domain
     - _Requirements: 7.2_
   
-  - [~] 11.3 Viết property test cho domain restriction
+  - [x] 11.3 Viết property test cho domain restriction
     - **Property 17: Domain restriction**
     - **Validates: Requirements 7.2**
     - Generate random URLs
     - Verify extension chỉ initialize trên Gemini Business domain
 
-- [~] 12. Triển khai security và privacy features
-  - [~] 12.1 Implement network monitoring để verify no external requests
+- [x] 12. Triển khai security và privacy features
+  - [x] 12.1 Implement network monitoring để verify no external requests
     - Add test để check không có outbound network calls
     - _Requirements: 8.2, 8.3_
   
-  - [~] 12.2 Viết property test cho no external data transmission
+  - [x] 12.2 Viết property test cho no external data transmission
     - **Property 19: No external data transmission**
     - **Validates: Requirements 8.2**
     - Mock network layer
     - Verify không có requests đến external domains
   
-  - [~] 12.3 Implement storage checking
+  - [x] 12.3 Implement storage checking
     - Verify không có data được lưu vào localStorage/sessionStorage/IndexedDB
     - _Requirements: 8.4_
   
-  - [~] 12.4 Viết property test cho no data persistence
+  - [x] 12.4 Viết property test cho no data persistence
     - **Property 20: No data persistence**
     - **Validates: Requirements 8.4**
     - Check storage sau export operations
     - Verify storage remains empty
 
-- [~] 13. Performance optimization và testing
-  - [~] 13.1 Implement chunking cho large conversations
+- [x] 13. Performance optimization và testing
+  - [x] 13.1 Implement chunking cho large conversations
     - Xử lý messages theo batches nếu >200 messages
     - Sử dụng requestIdleCallback để tránh block UI
     - _Requirements: 7.4_
   
-  - [~] 13.2 Viết property test cho large conversations
+  - [x] 13.2 Viết property test cho large conversations
     - **Property 18: Xử lý large conversations**
     - **Validates: Requirements 7.4**
     - Generate conversations với 100-500 messages
     - Verify extension xử lý thành công không timeout
   
-  - [~] 13.3 Implement memory cleanup
+  - [x] 13.3 Implement memory cleanup
     - Revoke object URLs sau download
     - Clear references sau export
     - Remove event listeners khi cần
     - _Requirements: 7.5_
 
 
-- [~] 14. Xác định và cập nhật DOM selectors thực tế
-  - [~] 14.1 Inspect DOM của Gemini Business để xác định selectors
+- [x] 14. Xác định và cập nhật DOM selectors thực tế
+  - [x] 14.1 Inspect DOM của Gemini Business để xác định selectors
     - Tìm selector cho chat container
     - Tìm selector cho message elements
     - Tìm selector để phân biệt user vs gemini messages
@@ -371,40 +371,40 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Document tất cả selectors trong constants file
     - _Requirements: 1.1, 2.1, 3.1, 4.1_
   
-  - [~] 14.2 Cập nhật code với selectors thực tế
+  - [x] 14.2 Cập nhật code với selectors thực tế
     - Replace placeholder selectors trong tất cả modules
     - Test lại với DOM thực tế
     - _Requirements: 1.1, 2.1, 3.1, 4.1_
 
-- [~] 15. Build và package extension
-  - [~] 15.1 Configure build process
+- [x] 15. Build và package extension
+  - [x] 15.1 Configure build process
     - Setup webpack/vite để bundle TypeScript thành JavaScript
     - Bundle html2pdf.js library
     - Copy manifest.json và assets vào dist folder
     - Minify code cho production
     - _Requirements: 7.1_
   
-  - [~] 15.2 Tạo build scripts trong package.json
+  - [x] 15.2 Tạo build scripts trong package.json
     - npm run build: production build
     - npm run dev: development build với watch mode
     - npm run test: chạy tất cả tests
     - _Requirements: 7.1_
   
-  - [~] 15.3 Test extension trong Chrome
+  - [x] 15.3 Test extension trong Chrome
     - Load unpacked extension vào Chrome
     - Navigate đến Gemini Business
     - Test export functionality với real chat
     - Verify PDF output quality
     - _Requirements: 1.1, 2.1, 3.1, 4.1, 5.1, 7.6_
 
-- [~] 16. Final checkpoint và polish
-  - [~] 16.1 Chạy tất cả tests và đảm bảo pass
+- [x] 16. Final checkpoint và polish
+  - [x] 16.1 Chạy tất cả tests và đảm bảo pass
     - Run unit tests
     - Run property tests với 100+ iterations
     - Fix any failing tests
     - _Requirements: All_
   
-  - [~] 16.2 Manual testing với various scenarios
+  - [x] 16.2 Manual testing với various scenarios
     - Test với empty chat
     - Test với chat có 1 message
     - Test với chat có nhiều messages (>100)
@@ -416,20 +416,20 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Test error scenarios
     - _Requirements: All_
   
-  - [~] 16.3 Code review và cleanup
+  - [x] 16.3 Code review và cleanup
     - Remove console.logs không cần thiết
     - Add comments cho complex logic
     - Ensure consistent code style
     - Update README với installation và usage instructions
     - _Requirements: All_
   
-  - [~] 16.4 Verify manifest permissions
+  - [x] 16.4 Verify manifest permissions
     - Đảm bảo chỉ request permissions cần thiết
     - Verify host_permissions chỉ cho Gemini Business domain
     - _Requirements: 8.1, 8.5_
 
-- [~] 17. Documentation và deployment preparation
-  - [~] 17.1 Tạo README.md
+- [x] 17. Documentation và deployment preparation
+  - [x] 17.1 Tạo README.md
     - Mô tả extension
     - Installation instructions
     - Usage guide
@@ -437,11 +437,11 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Privacy policy statement
     - _Requirements: All_
   
-  - [~] 17.2 Tạo CHANGELOG.md
+  - [x] 17.2 Tạo CHANGELOG.md
     - Document version 1.0.0 features
     - _Requirements: All_
   
-  - [~] 17.3 Prepare cho Chrome Web Store submission (optional)
+  - [x] 17.3 Prepare cho Chrome Web Store submission (optional)
     - Tạo promotional images
     - Write store description
     - Prepare privacy policy

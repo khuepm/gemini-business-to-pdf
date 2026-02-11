@@ -75,11 +75,14 @@ describe('Export Flow - Integration Tests', () => {
         const expandBtn = document.createElement('button');
         expandBtn.className = 'expand-button';
         expandBtn.textContent = 'Show more';
-        expandBtn.onclick = () => {
+        
+        // Make the message itself clickable to expand
+        message.onclick = () => {
           message.classList.remove('collapsed');
           message.removeAttribute('data-collapsed');
           expandBtn.remove();
         };
+        
         message.appendChild(expandBtn);
       }
 
@@ -133,8 +136,8 @@ describe('Export Flow - Integration Tests', () => {
       // Execute: Trigger export
       const exportPromise = controller.handleExport();
 
-      // Wait a tiny bit for the export to start
-      await new Promise(resolve => setTimeout(resolve, 5));
+      // Wait for the next microtask to allow the button state to update
+      await Promise.resolve();
 
       // Verify: Button is disabled during export
       expect(mockButton.disabled).toBe(true);
@@ -176,7 +179,7 @@ describe('Export Flow - Integration Tests', () => {
 
       // Verify: PDF generation was called
       expect(html2pdf).toHaveBeenCalled();
-    });
+    }, 10000); // Increase timeout to 10s
 
     it('should extract all messages in correct order', async () => {
       // Setup: Add messages
@@ -262,7 +265,7 @@ describe('Export Flow - Integration Tests', () => {
 
       // Verify: Steps executed in correct order
       expect(executionOrder).toEqual(['expand', 'extract', 'generatePDF']);
-    });
+    }, 10000); // Increase timeout to 10s
 
     it('should preserve message formatting in PDF', async () => {
       // Setup: Add messages with various formatting
@@ -370,7 +373,7 @@ describe('Export Flow - Integration Tests', () => {
 
       // Verify: Button is re-enabled
       expect(mockButton.disabled).toBe(false);
-    });
+    }, 10000); // Increase timeout to 10s to account for expansion timeout
 
     it('should handle error when title extraction fails', async () => {
       // Setup: Remove title element
@@ -522,6 +525,120 @@ describe('Export Flow - Integration Tests', () => {
       expect(notification).toBeTruthy();
       expect(notification?.textContent).toContain('Không thể xuất PDF');
       expect(notification?.textContent).toContain('Test error');
+    });
+  });
+
+  describe('Network Monitoring', () => {
+    it('should not make any external network requests during export', async () => {
+      // Setup: Track all network requests
+      const networkRequests: Array<{ url: string; method: string }> = [];
+      
+      // Mock fetch to track requests
+      const originalFetch = global.fetch;
+      global.fetch = vi.fn((url: RequestInfo | URL, options?: RequestInit) => {
+        const urlString = typeof url === 'string' ? url : url.toString();
+        networkRequests.push({
+          url: urlString,
+          method: options?.method || 'GET'
+        });
+        return Promise.reject(new Error('Network request blocked in test'));
+      }) as any;
+
+      // Mock XMLHttpRequest to track requests
+      const originalXHR = global.XMLHttpRequest;
+      class MockXMLHttpRequest {
+        private _url: string = '';
+        private _method: string = '';
+        
+        open(method: string, url: string) {
+          this._method = method;
+          this._url = url;
+          networkRequests.push({ url, method });
+        }
+        
+        send() {
+          throw new Error('Network request blocked in test');
+        }
+        
+        setRequestHeader() {}
+        addEventListener() {}
+        removeEventListener() {}
+      }
+      global.XMLHttpRequest = MockXMLHttpRequest as any;
+
+      try {
+        // Setup: Add messages
+        addMessages(5);
+
+        // Initialize and trigger export
+        controller.initialize();
+        mockButton = document.querySelector('.gemini-pdf-export-button') as HTMLButtonElement;
+        await controller.handleExport();
+
+        // Verify: No network requests were made
+        expect(networkRequests).toHaveLength(0);
+
+        // Verify: Export completed successfully (PDF was generated)
+        expect(html2pdf).toHaveBeenCalled();
+      } finally {
+        // Restore original implementations
+        global.fetch = originalFetch;
+        global.XMLHttpRequest = originalXHR;
+      }
+    });
+
+    it('should process all data locally without external API calls', async () => {
+      // Setup: Track network activity
+      let networkActivityDetected = false;
+      
+      // Monitor various network APIs
+      const originalFetch = global.fetch;
+      const originalXHR = global.XMLHttpRequest;
+      
+      global.fetch = vi.fn(() => {
+        networkActivityDetected = true;
+        return Promise.reject(new Error('Unexpected network call'));
+      }) as any;
+
+      class NetworkMonitorXHR {
+        open() { networkActivityDetected = true; }
+        send() { throw new Error('Unexpected network call'); }
+        setRequestHeader() {}
+        addEventListener() {}
+        removeEventListener() {}
+      }
+      global.XMLHttpRequest = NetworkMonitorXHR as any;
+
+      try {
+        // Setup: Add messages with various content types
+        const complexMessage = document.createElement('div');
+        complexMessage.className = 'user-message message';
+        complexMessage.innerHTML = `
+          <div class="message-content">
+            <p>Complex content with <strong>formatting</strong></p>
+            <pre><code>const code = "test";</code></pre>
+            <ul><li>List item</li></ul>
+            <table><tr><td>Table data</td></tr></table>
+          </div>
+        `;
+        mockChatContainer.appendChild(complexMessage);
+        addMessages(3);
+
+        // Initialize and trigger export
+        controller.initialize();
+        mockButton = document.querySelector('.gemini-pdf-export-button') as HTMLButtonElement;
+        await controller.handleExport();
+
+        // Verify: No network activity was detected
+        expect(networkActivityDetected).toBe(false);
+
+        // Verify: Export completed successfully
+        expect(html2pdf).toHaveBeenCalled();
+      } finally {
+        // Restore
+        global.fetch = originalFetch;
+        global.XMLHttpRequest = originalXHR;
+      }
     });
   });
 

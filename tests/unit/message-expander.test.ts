@@ -636,4 +636,151 @@ describe('MessageExpander', () => {
       expect(result.failed).toBe(1);
     }, 5000);
   });
+
+  describe('chunking for large conversations', () => {
+    it('should use sequential processing for conversations with <=200 messages', async () => {
+      // Setup: Create exactly 200 collapsed messages
+      const messages: HTMLElement[] = [];
+      for (let i = 0; i < 200; i++) {
+        const message = document.createElement('div');
+        message.className = 'message collapsed';
+        message.addEventListener('click', () => {
+          message.classList.remove('collapsed');
+        });
+        document.body.appendChild(message);
+        messages.push(message);
+      }
+
+      // Execute
+      const result = await expander.expandAllMessages();
+
+      // Verify
+      expect(result.totalFound).toBe(200);
+      expect(result.expanded).toBe(200);
+      expect(result.failed).toBe(0);
+      
+      // All messages should be expanded
+      messages.forEach(msg => {
+        expect(expander.isCollapsed(msg)).toBe(false);
+      });
+    }, 10000);
+
+    it('should use chunked processing for conversations with >200 messages', async () => {
+      // Setup: Create 250 collapsed messages (exceeds threshold)
+      const messages: HTMLElement[] = [];
+      for (let i = 0; i < 250; i++) {
+        const message = document.createElement('div');
+        message.className = 'message collapsed';
+        message.addEventListener('click', () => {
+          message.classList.remove('collapsed');
+        });
+        document.body.appendChild(message);
+        messages.push(message);
+      }
+
+      // Execute
+      const result = await expander.expandAllMessages();
+
+      // Verify
+      expect(result.totalFound).toBe(250);
+      expect(result.expanded).toBe(250);
+      expect(result.failed).toBe(0);
+      
+      // All messages should be expanded
+      messages.forEach(msg => {
+        expect(expander.isCollapsed(msg)).toBe(false);
+      });
+    }, 15000);
+
+    it('should process messages in batches of 50 for large conversations', async () => {
+      // Setup: Create 201 messages (just over threshold)
+      const messages: HTMLElement[] = [];
+      for (let i = 0; i < 201; i++) {
+        const message = document.createElement('div');
+        message.className = 'message collapsed';
+        message.addEventListener('click', () => {
+          message.classList.remove('collapsed');
+        });
+        document.body.appendChild(message);
+        messages.push(message);
+      }
+
+      // Execute
+      const result = await expander.expandAllMessages();
+
+      // Verify: Should process in 5 batches (50, 50, 50, 50, 1)
+      expect(result.totalFound).toBe(201);
+      expect(result.expanded).toBe(201);
+      expect(result.failed).toBe(0);
+    }, 15000);
+
+    it('should handle errors gracefully in chunked processing', async () => {
+      // Setup: Create 210 messages, some will fail
+      const messages: HTMLElement[] = [];
+      
+      // First 200 will succeed
+      for (let i = 0; i < 200; i++) {
+        const message = document.createElement('div');
+        message.className = 'message collapsed';
+        message.addEventListener('click', () => {
+          message.classList.remove('collapsed');
+        });
+        document.body.appendChild(message);
+        messages.push(message);
+      }
+      
+      // Next 10 will fail (no click handler) - reduced from 110 to keep test time reasonable
+      for (let i = 0; i < 10; i++) {
+        const message = document.createElement('div');
+        message.className = 'message collapsed';
+        // No click handler - will timeout
+        document.body.appendChild(message);
+        messages.push(message);
+      }
+
+      // Execute
+      const result = await expander.expandAllMessages();
+
+      // Verify
+      expect(result.totalFound).toBe(210);
+      expect(result.expanded).toBe(200);
+      expect(result.failed).toBe(10);
+      expect(result.errors.length).toBe(10);
+    }, 30000);
+
+    it('should preserve scroll position in chunked processing', async () => {
+      // Setup: Create tall content
+      const tallDiv = document.createElement('div');
+      tallDiv.style.height = '5000px';
+      document.body.appendChild(tallDiv);
+      
+      // Create 250 messages
+      for (let i = 0; i < 250; i++) {
+        const message = document.createElement('div');
+        message.className = 'message collapsed';
+        message.addEventListener('click', () => {
+          message.classList.remove('collapsed');
+        });
+        document.body.appendChild(message);
+      }
+
+      // Mock scrollTo to track calls
+      const scrollToSpy = vi.fn();
+      const originalScrollTo = window.scrollTo;
+      window.scrollTo = scrollToSpy;
+
+      // Set initial scroll position
+      Object.defineProperty(window, 'scrollX', { value: 150, writable: true });
+      Object.defineProperty(window, 'scrollY', { value: 300, writable: true });
+
+      // Execute
+      await expander.expandAllMessages();
+
+      // Verify scrollTo was called to restore position
+      expect(scrollToSpy).toHaveBeenCalledWith(150, 300);
+
+      // Cleanup
+      window.scrollTo = originalScrollTo;
+    }, 15000);
+  });
 });

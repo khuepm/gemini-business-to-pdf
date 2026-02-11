@@ -62,6 +62,7 @@ const DEFAULT_PDF_OPTIONS: PDFOptions = {
  */
 export class PDFGenerator {
   private options: PDFOptions;
+  private objectUrls: Set<string> = new Set();
 
   /**
    * Creates a new PDFGenerator instance
@@ -108,9 +109,9 @@ export class PDFGenerator {
    * - PDF_STYLES template for consistent formatting
    * - Header with chat title and export date
    * - Styled message containers with different backgrounds for user vs gemini
-   * 
+   *
    * Validates: Requirements 5.2, 5.4, 5.5
-   * 
+   *
    * @param content - ChatContent object containing messages
    * @param title - Optional chat title for the header
    * @returns Styled HTML string ready for PDF conversion
@@ -130,7 +131,7 @@ export class PDFGenerator {
     const messagesHtml = content.messages.map(message => {
       const senderClass = message.sender === 'user' ? 'user' : 'gemini';
       const senderLabel = message.sender === 'user' ? 'Bạn' : 'Gemini';
-      
+
       return `
         <div class="message ${senderClass}">
           <div class="message-header">${senderLabel}</div>
@@ -151,35 +152,35 @@ export class PDFGenerator {
           margin: 0 auto;
           padding: 20px;
         }
-        
+
         .message {
           margin-bottom: 20px;
           padding: 15px;
           border-radius: 8px;
           page-break-inside: avoid;
         }
-        
+
         .message.user {
           background-color: ${this.options.userMessageBg};
           margin-left: 40px;
         }
-        
+
         .message.gemini {
           background-color: ${this.options.geminiMessageBg};
           margin-right: 40px;
         }
-        
+
         .message-header {
           font-weight: bold;
           margin-bottom: 8px;
           font-size: 11pt;
           color: #666;
         }
-        
+
         .message-content {
           color: #333;
         }
-        
+
         .message-content code {
           background-color: #f0f0f0;
           padding: 2px 6px;
@@ -187,7 +188,7 @@ export class PDFGenerator {
           font-family: 'Courier New', monospace;
           font-size: 11pt;
         }
-        
+
         .message-content pre {
           background-color: #f8f8f8;
           padding: 12px;
@@ -196,68 +197,68 @@ export class PDFGenerator {
           overflow-x: auto;
           page-break-inside: avoid;
         }
-        
+
         .message-content pre code {
           background: none;
           padding: 0;
         }
-        
+
         .message-content table {
           border-collapse: collapse;
           width: 100%;
           margin: 10px 0;
           page-break-inside: avoid;
         }
-        
+
         .message-content th,
         .message-content td {
           border: 1px solid #ddd;
           padding: 8px;
           text-align: left;
         }
-        
+
         .message-content th {
           background-color: #f0f0f0;
           font-weight: bold;
         }
-        
+
         .message-content ul,
         .message-content ol {
           margin: 10px 0;
           padding-left: 30px;
         }
-        
+
         .message-content li {
           margin: 5px 0;
         }
-        
+
         .message-content a {
           color: #1a73e8;
           text-decoration: none;
         }
-        
+
         .message-content a:hover {
           text-decoration: underline;
         }
-        
+
         h1, h2, h3, h4, h5, h6 {
           margin-top: 20px;
           margin-bottom: 10px;
           page-break-after: avoid;
         }
-        
+
         .pdf-header {
           text-align: center;
           margin-bottom: 30px;
           padding-bottom: 20px;
           border-bottom: 2px solid #1a73e8;
         }
-        
+
         .pdf-header h1 {
           margin: 0;
           color: #1a73e8;
         }
-        
+
         .pdf-header .export-date {
           color: #666;
           font-size: 10pt;
@@ -358,7 +359,7 @@ export class PDFGenerator {
    * Creates a temporary download link and triggers it to download the PDF file.
    * Cleans up resources after download is initiated.
    *
-   * Validates: Requirements 5.6
+   * Validates: Requirements 5.6, 7.5
    *
    * @param pdfBlob - PDF data as a Blob object
    * @param filename - Filename for the downloaded PDF
@@ -366,6 +367,9 @@ export class PDFGenerator {
   downloadPDF(pdfBlob: Blob, filename: string): void {
     // Create object URL from blob
     const url = URL.createObjectURL(pdfBlob);
+
+    // Track the URL for cleanup
+    this.objectUrls.add(url);
 
     try {
       // Create temporary anchor element
@@ -384,8 +388,25 @@ export class PDFGenerator {
       // Use setTimeout to ensure download has started
       setTimeout(() => {
         URL.revokeObjectURL(url);
+        this.objectUrls.delete(url);
       }, 100);
     }
+  }
+
+  /**
+   * Clean up all resources used by the PDF generator
+   * Revokes all object URLs that haven't been cleaned up yet
+   *
+   * Validates: Requirements 7.5
+   */
+  cleanup(): void {
+    // Revoke all tracked object URLs
+    this.objectUrls.forEach(url => {
+      URL.revokeObjectURL(url);
+    });
+
+    // Clear the set
+    this.objectUrls.clear();
   }
 }
 

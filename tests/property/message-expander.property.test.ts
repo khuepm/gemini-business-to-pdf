@@ -1526,4 +1526,55 @@ describe('MessageExpander - Property Tests', () => {
       );
     });
   });
+
+  /**
+   * Feature: gemini-business-to-pdf, Property 18: Xử lý large conversations
+   * **Validates: Requirements 7.4**
+   * 
+   * Property: Với bất kỳ chat conversation nào có hơn 100 messages, 
+   * extension phải xử lý thành công mà không gây timeout hoặc crash.
+   */
+  it('Property 18: should handle large conversations without timeout or crash', async () => {
+    await fc.assert(
+      fc.asyncProperty(
+        // Generate random number of messages between 100 and 300
+        fc.integer({ min: 100, max: 300 }),
+        async (messageCount) => {
+          // Clear test container
+          testContainer.innerHTML = '';
+          
+          // Setup: Create large number of collapsed messages
+          const messages: HTMLElement[] = [];
+          
+          for (let i = 0; i < messageCount; i++) {
+            const message = document.createElement('div');
+            message.className = 'message collapsed';
+            message.addEventListener('click', () => {
+              // Immediate expansion
+              message.classList.remove('collapsed');
+            });
+            testContainer.appendChild(message);
+            messages.push(message);
+          }
+          
+          // Execute: Expand all messages (should not timeout or crash)
+          const result = await expander.expandAllMessages();
+          
+          // Verify: All messages were processed
+          expect(result.totalFound).toBe(messageCount);
+          expect(result.expanded).toBe(messageCount);
+          expect(result.failed).toBe(0);
+          
+          // Verify: All messages are expanded
+          messages.forEach(message => {
+            expect(expander.isCollapsed(message)).toBe(false);
+          });
+          
+          // Cleanup
+          testContainer.innerHTML = '';
+        }
+      ),
+      { numRuns: 10, timeout: 30000 } // Reduced runs for performance
+    );
+  }, 35000);
 });
