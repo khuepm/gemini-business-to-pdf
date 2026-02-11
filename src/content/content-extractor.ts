@@ -10,7 +10,12 @@
 
 import { Logger } from '../utils/logger';
 import { DOMError } from '../utils/error-handler';
-import { getChatContainer, getMessageElements } from '../utils/shadow-dom-utils';
+import { 
+  getChatContainer, 
+  getMessageElements, 
+  extractUserMessageContent, 
+  extractGeminiResponseContent 
+} from '../utils/shadow-dom-utils';
 
 /**
  * Represents a single chat message
@@ -191,26 +196,24 @@ export class ContentExtractor {
       // Identify the sender
       const sender = this.identifySender(messageElement);
 
-      // Extract HTML content from shadow DOM if available
+      // Extract HTML content based on sender type
       let content = '';
       
-      if (messageElement.shadowRoot) {
-        // Access shadow DOM content
-        const shadowContent = messageElement.shadowRoot.querySelector('.markdown-document, [class*="markdown"]');
-        if (shadowContent) {
-          content = shadowContent.innerHTML;
-        } else {
-          // Fallback: get all text content from shadow root
-          content = messageElement.shadowRoot.textContent || '';
-        }
+      if (sender === 'user') {
+        // Extract user message content from ucs-fast-markdown
+        content = extractUserMessageContent(messageElement);
       } else {
-        // Fallback: use regular innerHTML
-        content = messageElement.innerHTML;
+        // Extract gemini response content from ucs-summary
+        content = extractGeminiResponseContent(messageElement);
       }
 
-      // If still empty, try textContent
+      // If content is still empty, try fallback methods
       if (!content.trim()) {
-        content = messageElement.textContent || '';
+        if (messageElement.shadowRoot) {
+          content = messageElement.shadowRoot.textContent || '';
+        } else {
+          content = messageElement.textContent || '';
+        }
       }
 
       // Extract timestamp if available
@@ -251,15 +254,26 @@ export class ContentExtractor {
   identifySender(messageElement: HTMLElement): 'user' | 'gemini' {
     const tagName = messageElement.tagName.toLowerCase();
     
-    // User messages: ucs-text-streamer, ucs-fast-markdown
-    if (tagName === 'ucs-text-streamer' || tagName === 'ucs-fast-markdown') {
-      Logger.info('Identified as user message');
+    // User messages: ucs-fast-markdown
+    if (tagName === 'ucs-fast-markdown') {
+      Logger.info('Identified as user message (ucs-fast-markdown)');
       return 'user';
     }
     
-    // Gemini messages: ucs-summary, ucs-response-markdown
-    if (tagName === 'ucs-summary' || tagName === 'ucs-response-markdown') {
-      Logger.info('Identified as gemini message');
+    // Gemini messages: ucs-summary
+    if (tagName === 'ucs-summary') {
+      Logger.info('Identified as gemini message (ucs-summary)');
+      return 'gemini';
+    }
+
+    // Legacy check for backward compatibility
+    if (tagName === 'ucs-text-streamer') {
+      Logger.info('Identified as user message (ucs-text-streamer)');
+      return 'user';
+    }
+    
+    if (tagName === 'ucs-response-markdown') {
+      Logger.info('Identified as gemini message (ucs-response-markdown)');
       return 'gemini';
     }
 

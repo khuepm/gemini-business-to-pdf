@@ -30,15 +30,46 @@ export function getChatContainer(): HTMLElement | null {
 }
 
 /**
+ * Gets all conversation turns (user question + gemini response pairs)
+ * Each turn contains both user message and gemini response
+ */
+export function getConversationTurns(): HTMLElement[] {
+  const container = getChatContainer();
+  if (!container) return [];
+
+  // Each turn is wrapped in div.turn
+  const turns = container.querySelectorAll('div.turn');
+  return Array.from(turns) as HTMLElement[];
+}
+
+/**
  * Gets all message elements from the chat container
+ * Returns both user messages and gemini responses
  */
 export function getMessageElements(): HTMLElement[] {
   const container = getChatContainer();
   if (!container) return [];
 
-  // TODO: Update selector based on actual message structure
-  const messages = container.querySelectorAll('[data-message], .message, [role="article"]');
-  return Array.from(messages) as HTMLElement[];
+  const messages: HTMLElement[] = [];
+  
+  // Get all conversation turns
+  const turns = container.querySelectorAll('div.turn');
+  
+  for (const turn of turns) {
+    // Find user message (ucs-fast-markdown)
+    const userMessage = turn.querySelector('ucs-fast-markdown');
+    if (userMessage) {
+      messages.push(userMessage as HTMLElement);
+    }
+    
+    // Find gemini response (ucs-summary)
+    const geminiResponse = turn.querySelector('ucs-summary');
+    if (geminiResponse) {
+      messages.push(geminiResponse as HTMLElement);
+    }
+  }
+  
+  return messages;
 }
 
 /**
@@ -93,15 +124,90 @@ export function getHeaderElement(): HTMLElement | null {
 }
 
 /**
+ * Extracts content from a user message element (ucs-fast-markdown)
+ */
+export function extractUserMessageContent(userMessage: HTMLElement): string {
+  try {
+    if (userMessage.shadowRoot) {
+      const content = userMessage.shadowRoot.querySelector('div > div > p');
+      if (content) {
+        return content.innerHTML;
+      }
+      // Fallback: get all content from shadow root
+      return userMessage.shadowRoot.querySelector('div')?.innerHTML || '';
+    }
+    return userMessage.textContent || '';
+  } catch (error) {
+    console.error('Error extracting user message content:', error);
+    return userMessage.textContent || '';
+  }
+}
+
+/**
+ * Extracts content from a gemini response element (ucs-summary)
+ */
+export function extractGeminiResponseContent(geminiResponse: HTMLElement): string {
+  try {
+    if (geminiResponse.shadowRoot) {
+      // Navigate through nested shadow roots
+      const summaryContents = geminiResponse.shadowRoot.querySelector('div > div > div.summary-contents > div.summary > ucs-text-streamer') as HTMLElement & { shadowRoot: ShadowRoot };
+      
+      if (summaryContents?.shadowRoot) {
+        const responseMarkdown = summaryContents.shadowRoot.querySelector('ucs-response-markdown') as HTMLElement & { shadowRoot: ShadowRoot };
+        
+        if (responseMarkdown?.shadowRoot) {
+          const fastMarkdown = responseMarkdown.shadowRoot.querySelector('ucs-fast-markdown') as HTMLElement & { shadowRoot: ShadowRoot };
+          
+          if (fastMarkdown?.shadowRoot) {
+            const content = fastMarkdown.shadowRoot.querySelector('div > div');
+            if (content) {
+              return content.innerHTML;
+            }
+          }
+        }
+      }
+      
+      // Fallback: try to get text content
+      return geminiResponse.shadowRoot.textContent || '';
+    }
+    return geminiResponse.textContent || '';
+  } catch (error) {
+    console.error('Error extracting gemini response content:', error);
+    return geminiResponse.textContent || '';
+  }
+}
+
+/**
  * Finds all collapsed message elements
+ * Note: Based on the structure, collapsed messages might be indicated by specific classes or attributes
  */
 export function getCollapsedMessages(): HTMLElement[] {
   const container = getChatContainer();
   if (!container) return [];
 
-  // TODO: Update selector based on actual collapsed message structure
-  const collapsed = container.querySelectorAll('[data-collapsed="true"], .collapsed-message, [aria-expanded="false"]');
-  return Array.from(collapsed) as HTMLElement[];
+  const collapsed: HTMLElement[] = [];
+  
+  // Check all turns for collapsed state
+  const turns = container.querySelectorAll('div.turn');
+  
+  for (const turn of turns) {
+    // Check if turn has collapsed class or attribute
+    if (turn.classList.contains('collapsed') || 
+        turn.getAttribute('data-collapsed') === 'true' ||
+        turn.getAttribute('aria-expanded') === 'false') {
+      collapsed.push(turn as HTMLElement);
+    }
+    
+    // Also check individual message elements
+    const userMessage = turn.querySelector('ucs-fast-markdown');
+    if (userMessage && (
+        userMessage.classList.contains('collapsed') ||
+        userMessage.getAttribute('data-collapsed') === 'true')) {
+      collapsed.push(userMessage as HTMLElement);
+    }
+  }
+  
+  return collapsed;
 }
 
 /**
