@@ -127,10 +127,18 @@ export class PDFGenerator {
 
     const chatTitle = title || 'Gemini Chat';
 
+    console.log(`[PDFGenerator] Applying styles to ${content.messages.length} messages`);
+
     // Build messages HTML
-    const messagesHtml = content.messages.map(message => {
+    const messagesHtml = content.messages.map((message, index) => {
       const senderClass = message.sender === 'user' ? 'user' : 'gemini';
       const senderLabel = message.sender === 'user' ? 'Bạn' : 'Gemini';
+
+      console.log(`[PDFGenerator] Message ${index + 1}: sender=${message.sender}, contentLength=${message.content.length}`);
+      
+      if (!message.content.trim()) {
+        console.warn(`[PDFGenerator] Warning: Message ${index + 1} has empty content!`);
+      }
 
       return `
         <div class="message ${senderClass}">
@@ -139,6 +147,8 @@ export class PDFGenerator {
         </div>
       `;
     }).join('\n');
+
+    console.log(`[PDFGenerator] Generated HTML for ${content.messages.length} messages, total length: ${messagesHtml.length}`);
 
     // PDF_STYLES template from design document
     const PDF_STYLES = `
@@ -287,6 +297,7 @@ export class PDFGenerator {
       </html>
     `;
 
+    console.log(`[PDFGenerator] Final HTML length: ${styledHtml.length}`);
     return styledHtml;
   }
 
