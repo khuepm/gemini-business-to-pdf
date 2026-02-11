@@ -30,7 +30,23 @@ document.querySelector("body > ucs-standalone-app")
   .shadowRoot.querySelector("div > div > p")
 ```
 
-### Gemini Response (Câu trả lời của Gemini)
+### Chat Title (Tiêu đề cuộc trò chuyện)
+```javascript
+// Nav panel chứa conversation list
+document.querySelector("body > ucs-standalone-app")
+  .shadowRoot.querySelector("div > div.ucs-standalone-outer-row-container > ucs-nav-panel")
+  .shadowRoot.querySelector("div > div.sections-container > div.conversation-list")
+
+// Button của conversation đang mở (có class "selected")
+document.querySelector("body > ucs-standalone-app")
+  .shadowRoot.querySelector("div > div.ucs-standalone-outer-row-container > ucs-nav-panel")
+  .shadowRoot.querySelector("div > div.sections-container > div.conversation-list > div:nth-child(3) > div > button.list-item.selected")
+
+// Title element
+document.querySelector("body > ucs-standalone-app")
+  .shadowRoot.querySelector("div > div.ucs-standalone-outer-row-container > ucs-nav-panel")
+  .shadowRoot.querySelector("div > div.sections-container > div.conversation-list > div:nth-child(3) > div > button.list-item.selected > div.conversation-title")
+```
 ```javascript
 // Element: ucs-summary
 // Path to content (nested shadow roots):
@@ -100,27 +116,39 @@ turn.getAttribute('aria-expanded') === 'false'
 
 ---
 
-### 3. Chat Title (Tiêu đề cuộc trò chuyện) ⚠️
-**Vị trí:** Có thể ở ngoài Shadow DOM hoặc bên trong
+### 3. Chat Title (Tiêu đề cuộc trò chuyện) ✅
+**Vị trí:** Trong Shadow DOM của nav panel (sidebar)
 
-**Cần xác định:**
-- Selector cho title element
-- Vị trí của title trong DOM hierarchy
+**Đã xác định:**
+- Container: `ucs-nav-panel` > `div.conversation-list`
+- Selected conversation: `button.list-item.selected`
+- Title element: `div.conversation-title` bên trong button
 
-**Cập nhật trong file:** `src/utils/shadow-dom-utils.ts` - function `getChatTitleElement()`
-
-**Hiện tại (placeholder):**
-```javascript
-const selectors = [
-  'h1[data-title]',
-  '.chat-title',
-  '[aria-label*="conversation"]',
-  'header h1',
-  'header h2'
-];
+**Cấu trúc:**
+```
+ucs-standalone-app
+└── shadowRoot
+    └── div > div.ucs-standalone-outer-row-container > ucs-nav-panel
+        └── shadowRoot
+            └── div > div.sections-container > div.conversation-list
+                └── div > div > button.list-item.selected
+                    └── div.conversation-title (text content)
 ```
 
-**TODO:** Inspect để tìm selector chính xác cho title
+**Path đầy đủ:**
+```javascript
+document.querySelector("body > ucs-standalone-app")
+  .shadowRoot.querySelector("div > div.ucs-standalone-outer-row-container > ucs-nav-panel")
+  .shadowRoot.querySelector("div > div.sections-container > div.conversation-list > div:nth-child(3) > div > button.list-item.selected > div.conversation-title")
+```
+
+**Lưu ý:**
+- Button có class `list-item selected` là conversation đang được mở
+- Có thể có nhiều conversations trong list, nhưng chỉ một có class `selected`
+
+**Đã implement trong:** `src/utils/shadow-dom-utils.ts`
+- `getChatTitleElement()` - Lấy title của conversation đang mở
+- `getAllConversationTitles()` - Lấy tất cả titles (cho debugging)
 
 ---
 
@@ -152,11 +180,12 @@ const selectors = [
 - [x] Xác định selector cho message elements
 - [x] Xác định cách phân biệt user vs gemini messages
 - [x] Implement extraction functions cho user và gemini messages
+- [x] Xác định selector cho chat title
+- [x] Implement getChatTitleElement() function
 - [ ] Xác định selector cho collapsed messages
 - [ ] Xác định element để click expand
-- [ ] Xác định selector cho chat title
 - [ ] Xác định selector cho header container
-- [x] Cập nhật `src/utils/shadow-dom-utils.ts` với message selectors
+- [x] Cập nhật `src/utils/shadow-dom-utils.ts` với message và title selectors
 - [ ] Test extraction functions với data thực tế
 - [ ] Verify tất cả chức năng hoạt động đúng
 
@@ -242,7 +271,39 @@ if (geminiResponses.length > 0) {
 }
 
 // ============================================
-// Test 5: All Messages in Order
+// Test 5: Chat Title
+// ============================================
+const app = document.querySelector("body > ucs-standalone-app");
+if (app?.shadowRoot) {
+  const navPanel = app.shadowRoot.querySelector("div > div.ucs-standalone-outer-row-container > ucs-nav-panel");
+  if (navPanel?.shadowRoot) {
+    const conversationList = navPanel.shadowRoot.querySelector("div > div.sections-container > div.conversation-list");
+    if (conversationList) {
+      console.log('✅ Found conversation list');
+      
+      // Find selected conversation
+      const selectedButton = conversationList.querySelector("button.list-item.selected");
+      if (selectedButton) {
+        const titleElement = selectedButton.querySelector("div.conversation-title");
+        console.log('📌 Current chat title:', titleElement?.textContent);
+      } else {
+        console.log('⚠️ No selected conversation found');
+      }
+      
+      // List all conversations
+      const allButtons = conversationList.querySelectorAll("button.list-item");
+      console.log(`📋 Total conversations: ${allButtons.length}`);
+      allButtons.forEach((btn, idx) => {
+        const title = btn.querySelector("div.conversation-title");
+        const isSelected = btn.classList.contains('selected');
+        console.log(`  ${idx + 1}. ${isSelected ? '✓' : ' '} ${title?.textContent}`);
+      });
+    }
+  }
+}
+
+// ============================================
+// Test 6: All Messages in Order
 // ============================================
 console.log('\n📋 All messages in order:');
 turns.forEach((turn, index) => {
@@ -303,6 +364,25 @@ function extractGeminiResponse(element) {
   return element.textContent || '';
 }
 
+// Helper function để get chat title
+function getChatTitle() {
+  const app = document.querySelector("body > ucs-standalone-app");
+  if (app?.shadowRoot) {
+    const navPanel = app.shadowRoot.querySelector("div > div.ucs-standalone-outer-row-container > ucs-nav-panel");
+    if (navPanel?.shadowRoot) {
+      const conversationList = navPanel.shadowRoot.querySelector("div > div.sections-container > div.conversation-list");
+      if (conversationList) {
+        const selectedButton = conversationList.querySelector("button.list-item.selected");
+        if (selectedButton) {
+          const titleElement = selectedButton.querySelector("div.conversation-title");
+          return titleElement?.textContent?.trim() || null;
+        }
+      }
+    }
+  }
+  return null;
+}
+
 // Test helpers
 const container = document.querySelector("body > ucs-standalone-app")
   .shadowRoot.querySelector("div > div.ucs-standalone-outer-row-container > div > div.search-bar-and-results-container > div > ucs-results")
@@ -314,4 +394,5 @@ const geminiMsg = container.querySelector('ucs-summary');
 
 console.log('User message:', extractUserMessage(userMsg));
 console.log('Gemini response:', extractGeminiResponse(geminiMsg));
+console.log('Chat title:', getChatTitle());
 ```

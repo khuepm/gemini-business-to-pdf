@@ -76,30 +76,72 @@ export function getMessageElements(): HTMLElement[] {
  * Gets the chat title element (may be outside Shadow DOM)
  */
 export function getChatTitleElement(): HTMLElement | null {
-  // Try common locations for title
-  const selectors = [
-    'h1[data-title]',
-    '.chat-title',
-    '[aria-label*="conversation"]',
-    'header h1',
-    'header h2'
-  ];
+  try {
+    // Navigate to nav panel in Shadow DOM
+    const app = document.querySelector("body > ucs-standalone-app") as HTMLElement & { shadowRoot: ShadowRoot };
+    if (!app?.shadowRoot) return null;
 
-  for (const selector of selectors) {
-    const element = document.querySelector(selector) as HTMLElement;
-    if (element) return element;
-  }
+    const navPanel = app.shadowRoot.querySelector("div > div.ucs-standalone-outer-row-container > ucs-nav-panel") as HTMLElement & { shadowRoot: ShadowRoot };
+    if (!navPanel?.shadowRoot) return null;
 
-  // Try inside Shadow DOM
-  const container = getChatContainer();
-  if (container) {
-    for (const selector of selectors) {
-      const element = container.querySelector(selector) as HTMLElement;
-      if (element) return element;
+    // Find the conversation list
+    const conversationList = navPanel.shadowRoot.querySelector("div > div.sections-container > div.conversation-list");
+    if (!conversationList) return null;
+
+    // Find the selected conversation button (has class "selected")
+    const selectedButton = conversationList.querySelector("button.list-item.selected");
+    if (!selectedButton) {
+      // Fallback: try to find any button with selected class
+      const anySelected = conversationList.querySelector("button.selected");
+      if (anySelected) {
+        const titleElement = anySelected.querySelector("div.conversation-title") as HTMLElement;
+        return titleElement;
+      }
+      return null;
     }
-  }
 
-  return null;
+    // Get the conversation title from the selected button
+    const titleElement = selectedButton.querySelector("div.conversation-title") as HTMLElement;
+    return titleElement;
+  } catch (error) {
+    console.error("Error getting chat title element:", error);
+    return null;
+  }
+}
+
+/**
+ * Gets all conversation titles from the conversation list
+ * Useful for debugging or future features
+ */
+export function getAllConversationTitles(): Array<{ title: string; isSelected: boolean }> {
+  try {
+    const app = document.querySelector("body > ucs-standalone-app") as HTMLElement & { shadowRoot: ShadowRoot };
+    if (!app?.shadowRoot) return [];
+
+    const navPanel = app.shadowRoot.querySelector("div > div.ucs-standalone-outer-row-container > ucs-nav-panel") as HTMLElement & { shadowRoot: ShadowRoot };
+    if (!navPanel?.shadowRoot) return [];
+
+    const conversationList = navPanel.shadowRoot.querySelector("div > div.sections-container > div.conversation-list");
+    if (!conversationList) return [];
+
+    const buttons = conversationList.querySelectorAll("button.list-item");
+    const titles: Array<{ title: string; isSelected: boolean }> = [];
+
+    buttons.forEach(button => {
+      const titleElement = button.querySelector("div.conversation-title");
+      if (titleElement) {
+        titles.push({
+          title: titleElement.textContent?.trim() || '',
+          isSelected: button.classList.contains('selected')
+        });
+      }
+    });
+
+    return titles;
+  } catch (error) {
+    console.error("Error getting all conversation titles:", error);
+    return [];
+  }
 }
 
 /**
