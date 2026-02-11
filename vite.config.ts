@@ -44,7 +44,9 @@ export default defineConfig({
         if (!existsSync('dist/icons')) {
           mkdirSync('dist/icons', { recursive: true });
         }
-        // Note: Icon files need to be created manually
+        copyFileSync('icons/icon16.png', 'dist/icons/icon16.png');
+        copyFileSync('icons/icon48.png', 'dist/icons/icon48.png');
+        copyFileSync('icons/icon128.png', 'dist/icons/icon128.png');
       },
     },
   ],
