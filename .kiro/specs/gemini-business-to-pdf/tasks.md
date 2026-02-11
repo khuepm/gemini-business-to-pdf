@@ -119,21 +119,21 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
   - Fix bất kỳ issues nào được phát hiện
   - Hỏi user nếu có câu hỏi phát sinh
 
-- [~] 6. Triển khai Content Extractor
-  - [~] 6.1 Tạo ContentExtractor class với method extractChatContent
+- [x] 6. Triển khai Content Extractor
+  - [x] 6.1 Tạo ContentExtractor class với method extractChatContent
     - Tìm chat container trong DOM
     - Iterate qua tất cả message elements
     - Extract từng message bằng extractMessage method
     - Return ChatContent object với array of messages
     - _Requirements: 3.1_
   
-  - [~] 6.2 Viết property test cho extractChatContent
+  - [x] 6.2 Viết property test cho extractChatContent
     - **Property 6: Trích xuất tất cả messages**
     - **Validates: Requirements 3.1**
     - Generate random chat containers với varying số lượng messages
     - Verify tất cả messages được extract
   
-  - [~] 6.3 Implement method extractMessage
+  - [x] 6.3 Implement method extractMessage
     - Clone message element để tránh modify DOM gốc
     - Extract HTML content (innerHTML hoặc outerHTML)
     - Identify sender bằng identifySender method
@@ -141,12 +141,12 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Return Message object
     - _Requirements: 3.2, 3.3, 3.7_
   
-  - [~] 6.4 Implement method identifySender
+  - [x] 6.4 Implement method identifySender
     - Check classes/attributes của message element
     - Return 'user' hoặc 'gemini'
     - _Requirements: 3.7_
   
-  - [~] 6.5 Viết property tests cho Content Extractor
+  - [x] 6.5 Viết property tests cho Content Extractor
     - **Property 7: Bảo toàn HTML structure**
     - **Validates: Requirements 3.2**
     - **Property 8: Bảo toàn tất cả formatting**
@@ -156,7 +156,7 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Generate random HTML với various formatting (bold, italic, code, tables, lists)
     - Verify structure và formatting được preserve
   
-  - [~] 6.6 Viết unit tests cho Content Extractor
+  - [x] 6.6 Viết unit tests cho Content Extractor
     - Test với empty chat
     - Test với messages chứa code blocks
     - Test với messages chứa tables
@@ -165,77 +165,77 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7_
 
 
-- [~] 7. Triển khai Title Extractor
-  - [~] 7.1 Tạo TitleExtractor class với method extractTitle
+- [x] 7. Triển khai Title Extractor
+  - [x] 7.1 Tạo TitleExtractor class với method extractTitle
     - Tìm title element trong DOM bằng selector
     - Extract textContent hoặc innerText
     - Return string hoặc null nếu không tìm thấy
     - _Requirements: 4.1_
   
-  - [~] 7.2 Viết property test cho extractTitle
+  - [x] 7.2 Viết property test cho extractTitle
     - **Property 10: Trích xuất title thành công**
     - **Validates: Requirements 4.1**
     - Generate random DOM states với và không có title
     - Verify title được extract chính xác
   
-  - [~] 7.3 Implement method sanitizeFilename
+  - [x] 7.3 Implement method sanitizeFilename
     - Replace invalid characters (/, \, :, *, ?, ", <, >, |) với underscore
     - Trim whitespace
     - Remove multiple consecutive spaces/underscores
     - _Requirements: 4.4_
   
-  - [~] 7.4 Implement method truncateFilename
+  - [x] 7.4 Implement method truncateFilename
     - Truncate ở maxLength (100 characters)
     - Cố gắng cắt ở word boundary
     - _Requirements: 4.5_
   
-  - [~] 7.5 Implement method generateFilename
+  - [x] 7.5 Implement method generateFilename
     - Nếu title tồn tại: sanitize và truncate title
     - Nếu title null/empty: tạo fallback "gemini-chat-[timestamp]"
     - Luôn thêm extension ".pdf"
     - _Requirements: 4.2, 4.3, 4.4, 4.5_
   
-  - [~] 7.6 Viết property test cho generateFilename
+  - [x] 7.6 Viết property test cho generateFilename
     - **Property 11: Filename generation và sanitization**
     - **Validates: Requirements 4.2, 4.4, 4.5**
     - Generate random strings (bao gồm invalid characters, very long strings)
     - Verify filename luôn valid, không có invalid chars, không quá dài
   
-  - [~] 7.7 Viết unit tests cho Title Extractor
+  - [x] 7.7 Viết unit tests cho Title Extractor
     - Test với title bình thường
     - Test với title chứa tất cả invalid characters
     - Test với title rất dài (>100 chars)
     - Test với title null/empty (fallback case)
     - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
 
-- [~] 8. Triển khai PDF Generator
-  - [~] 8.1 Tạo PDFGenerator class và integrate html2pdf.js library
+- [x] 8. Triển khai PDF Generator
+  - [x] 8.1 Tạo PDFGenerator class và integrate html2pdf.js library
     - Import html2pdf.js
     - Define PDFOptions interface
     - Setup default options (A4, margins, fonts)
     - _Requirements: 5.1_
   
-  - [~] 8.2 Implement method applyStyles
+  - [x] 8.2 Implement method applyStyles
     - Tạo HTML template với PDF_STYLES
     - Wrap messages trong styled containers
     - Thêm header với chat title và export date
     - Distinguish user vs gemini messages với different backgrounds
     - _Requirements: 5.2, 5.4, 5.5_
   
-  - [~] 8.3 Implement method generatePDF
+  - [x] 8.3 Implement method generatePDF
     - Convert ChatContent thành styled HTML
     - Call html2pdf với options
     - Generate PDF blob
     - Call downloadPDF với blob và filename
     - _Requirements: 5.1, 5.3, 5.6_
   
-  - [~] 8.4 Viết property test cho generatePDF
+  - [x] 8.4 Viết property test cho generatePDF
     - **Property 12: HTML to PDF conversion với format preservation**
     - **Validates: Requirements 5.1, 5.3**
     - Generate random HTML content với various formatting
     - Verify PDF được tạo thành công và formatting được preserve
   
-  - [~] 8.5 Implement method downloadPDF
+  - [x] 8.5 Implement method downloadPDF
     - Tạo object URL từ blob
     - Tạo temporary <a> element với download attribute
     - Set href và filename
@@ -243,32 +243,32 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Cleanup: revoke object URL và remove element
     - _Requirements: 5.6_
   
-  - [~] 8.6 Viết property test cho downloadPDF
+  - [x] 8.6 Viết property test cho downloadPDF
     - **Property 13: PDF download với đúng filename**
     - **Validates: Requirements 5.6**
     - Generate random filenames
     - Mock download và verify filename được sử dụng đúng
   
-  - [~] 8.7 Viết unit tests cho PDF Generator
+  - [x] 8.7 Viết unit tests cho PDF Generator
     - Test applyStyles với different message types
     - Test generatePDF với sample content
     - Test downloadPDF trigger
     - Mock html2pdf library
     - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6_
 
-- [~] 9. Checkpoint - Đảm bảo tất cả tests pass
+- [x] 9. Checkpoint - Đảm bảo tất cả tests pass
   - Chạy tất cả tests cho Content Extractor, Title Extractor, và PDF Generator
   - Fix bất kỳ issues nào được phát hiện
   - Hỏi user nếu có câu hỏi phát sinh
 
 
-- [~] 10. Triển khai Main Controller và tích hợp các thành phần
-  - [~] 10.1 Tạo ExportController class
+- [x] 10. Triển khai Main Controller và tích hợp các thành phần
+  - [x] 10.1 Tạo ExportController class
     - Khởi tạo tất cả dependencies (UIInjector, MessageExpander, ContentExtractor, TitleExtractor, PDFGenerator)
     - Implement initialize method để setup extension khi page load
     - _Requirements: 1.1_
   
-  - [~] 10.2 Implement method handleExport
+  - [x] 10.2 Implement method handleExport
     - Orchestrate toàn bộ export flow:
       1. Show loading và disable button
       2. Expand all messages
@@ -280,12 +280,12 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - Luôn cleanup trong finally block
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 3.1, 3.2, 3.3, 4.1, 4.2, 5.1, 5.6, 5.7, 6.1, 6.2, 6.5_
   
-  - [~] 10.3 Wire up button click event
+  - [x] 10.3 Wire up button click event
     - Attach handleExport to export button click event
     - Prevent multiple simultaneous exports
     - _Requirements: 1.1, 6.2_
   
-  - [~] 10.4 Viết property tests cho ExportController
+  - [x] 10.4 Viết property tests cho ExportController
     - **Property 14: Button disabled trong khi processing**
     - **Validates: Requirements 6.2**
     - **Property 15: Error handling với message cụ thể**
@@ -293,7 +293,7 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - **Property 16: Button re-enabled sau completion**
     - **Validates: Requirements 6.5**
   
-  - [~] 10.5 Viết integration tests cho complete export flow
+  - [x] 10.5 Viết integration tests cho complete export flow
     - Test end-to-end flow từ button click đến PDF download
     - Mock DOM của Gemini Business
     - Mock html2pdf library
