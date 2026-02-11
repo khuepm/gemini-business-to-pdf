@@ -13,6 +13,7 @@ import { MessageExpander } from './message-expander';
 import { ContentExtractor, ChatContent } from './content-extractor';
 import { TitleExtractor } from './title-extractor';
 import { PDFGenerator } from './pdf-generator';
+import { MarkdownGenerator } from './markdown-generator';
 import { Logger } from '../utils/logger';
 import { ErrorHandler } from '../utils/error-handler';
 
@@ -59,9 +60,11 @@ export class ExportController implements IExportController {
   private contentExtractor: ContentExtractor;
   private titleExtractor: TitleExtractor;
   private pdfGenerator: PDFGenerator;
+  private markdownGenerator: MarkdownGenerator;
 
   // State
   private isExporting: boolean = false;
+  private exportFormat: 'pdf' | 'markdown' = 'markdown'; // Default to markdown since PDF has issues
 
   /**
    * Create a new ExportController instance
@@ -78,6 +81,7 @@ export class ExportController implements IExportController {
     this.contentExtractor = new ContentExtractor();
     this.titleExtractor = new TitleExtractor();
     this.pdfGenerator = new PDFGenerator();
+    this.markdownGenerator = new MarkdownGenerator();
 
     Logger.info('ExportController: All dependencies initialized');
   }
@@ -138,7 +142,8 @@ export class ExportController implements IExportController {
 
     try {
       // Step 1: Show loading and disable button
-      this.log('Bắt đầu export PDF', 'info');
+      const formatName = this.exportFormat === 'pdf' ? 'PDF' : 'Markdown';
+      this.log(`Bắt đầu export ${formatName}`, 'info');
       this.uiInjector.showLoading();
       this.uiInjector.disableButton();
 
@@ -165,16 +170,22 @@ export class ExportController implements IExportController {
       // Step 4: Get title and generate filename
       this.log('Đang tạo filename...', 'info');
       const title = this.titleExtractor.extractTitle();
-      const filename = this.titleExtractor.generateFilename(title);
-      this.log(`Filename: ${filename}`, 'info');
-
-      // Step 5: Generate PDF
-      this.log('Đang tạo PDF...', 'info');
-      await this.pdfGenerator.generatePDF(content, filename);
-      this.log('PDF đã được tạo và tải xuống', 'info');
-
-      // Step 6: Show success notification
-      this.uiInjector.showNotification('Đã xuất PDF thành công!', 'success');
+      const baseFilename = this.titleExtractor.generateFilename(title);
+      
+      // Step 5: Generate file based on format
+      if (this.exportFormat === 'markdown') {
+        this.log('Đang tạo Markdown...', 'info');
+        const filename = baseFilename.replace('.pdf', '.md');
+        const markdown = this.markdownGenerator.generateMarkdown(content, title);
+        this.markdownGenerator.downloadMarkdown(markdown, filename);
+        this.log('Markdown đã được tạo và tải xuống', 'info');
+        this.uiInjector.showNotification('Đã xuất Markdown thành công!', 'success');
+      } else {
+        this.log('Đang tạo PDF...', 'info');
+        await this.pdfGenerator.generatePDF(content, baseFilename);
+        this.log('PDF đã được tạo và tải xuống', 'info');
+        this.uiInjector.showNotification('Đã xuất PDF thành công!', 'success');
+      }
 
     } catch (error) {
       // Handle any errors that occur during export
@@ -214,6 +225,23 @@ export class ExportController implements IExportController {
       `Không thể xuất PDF: ${error.message}`,
       'error'
     );
+  }
+
+  /**
+   * Set the export format (PDF or Markdown)
+   * @param format - Export format to use
+   */
+  setExportFormat(format: 'pdf' | 'markdown'): void {
+    this.exportFormat = format;
+    Logger.info(`ExportController: Export format set to ${format}`);
+  }
+
+  /**
+   * Get the current export format
+   * @returns Current export format
+   */
+  getExportFormat(): 'pdf' | 'markdown' {
+    return this.exportFormat;
   }
 
   /**

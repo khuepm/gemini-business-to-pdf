@@ -23,10 +23,12 @@ npm run build
 
 ### 3. Sử dụng (1 phút)
 
-1. Truy cập https://business.gemini.google.com
+1. Truy cập https://gemini.google.com
 2. Mở một cuộc trò chuyện
-3. Click nút "Export to PDF" ở góc trên phải
-4. File PDF sẽ tự động download
+3. Click nút "Export" ở góc trên phải
+4. File Markdown (.md) sẽ tự động download
+   - Định dạng mặc định: Markdown (bảo toàn tốt cấu trúc nội dung)
+   - Hỗ trợ: code blocks, tables, lists, hình ảnh đính kèm
 
 ## 📦 Build và Package
 

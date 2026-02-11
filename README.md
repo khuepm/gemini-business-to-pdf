@@ -7,16 +7,18 @@ Chrome extension cho phép xuất toàn bộ cuộc trò chuyện từ Gemini Bu
 
 ## Mô Tả
 
-Gemini Business to PDF là một Chrome extension giúp bạn lưu trữ và chia sẻ các cuộc trò chuyện với Gemini AI một cách dễ dàng. Extension tự động mở rộng các tin nhắn bị thu nhỏ, giữ nguyên toàn bộ định dạng (bold, italic, code blocks, tables, lists), và tạo file PDF với tên thông minh dựa trên tiêu đề cuộc trò chuyện.
+Gemini Business to PDF là một Chrome extension giúp bạn lưu trữ và chia sẻ các cuộc trò chuyện với Gemini AI một cách dễ dàng. Extension tự động mở rộng các tin nhắn bị thu nhỏ, giữ nguyên toàn bộ định dạng (bold, italic, code blocks, tables, lists), và xuất thành file Markdown hoặc PDF với tên thông minh dựa trên tiêu đề cuộc trò chuyện.
 
 ### Tính Năng Chính
 
-- ✅ **Xuất PDF hoàn chỉnh**: Xuất toàn bộ nội dung cuộc trò chuyện thành file PDF chất lượng cao
+- ✅ **Xuất Markdown**: Xuất toàn bộ nội dung cuộc trò chuyện thành file Markdown (định dạng mặc định)
+- ✅ **Xuất PDF**: Hỗ trợ xuất sang PDF chất lượng cao
 - ✅ **Tự động mở rộng tin nhắn**: Tự động mở rộng các tin nhắn của người dùng bị thu nhỏ
 - ✅ **Bảo toàn định dạng**: Giữ nguyên tất cả định dạng văn bản, code blocks, tables, và lists
-- ✅ **Đặt tên thông minh**: Tự động đặt tên file PDF theo tiêu đề cuộc trò chuyện
+- ✅ **Hỗ trợ hình ảnh**: Trích xuất và bao gồm hình ảnh đính kèm trong tin nhắn
+- ✅ **Đặt tên thông minh**: Tự động đặt tên file theo tiêu đề cuộc trò chuyện
 - ✅ **Xử lý phía client**: Tất cả dữ liệu được xử lý trên trình duyệt của bạn, không gửi ra ngoài
-- ✅ **Giao diện thân thiện**: Nút xuất PDF được tích hợp liền mạch vào giao diện Gemini Business
+- ✅ **Giao diện thân thiện**: Nút xuất được tích hợp liền mạch vào giao diện Gemini Business
 
 ## Cài Đặt (Installation)
 
@@ -126,7 +128,7 @@ npm run build
 
 ## Hướng Dẫn Sử Dụng (Usage Guide)
 
-### Xuất Cuộc Trò Chuyện Thành PDF
+### Xuất Cuộc Trò Chuyện
 
 1. **Mở Gemini Business:**
    - Truy cập https://gemini.google.com
@@ -134,28 +136,31 @@ npm run build
    - Mở cuộc trò chuyện bạn muốn xuất
 
 2. **Tìm nút Export:**
-   - Nút "Export PDF" sẽ xuất hiện ở góc trên bên phải của trang
-   - Nút có icon PDF và text rõ ràng
+   - Nút "Export" sẽ xuất hiện ở góc trên bên phải của trang
+   - Nút có icon và text rõ ràng
 
 3. **Click Export:**
-   - Click vào nút "Export PDF"
+   - Click vào nút "Export"
    - Extension sẽ hiển thị loading indicator
    - Quá trình xuất bao gồm:
      - Tự động mở rộng tất cả tin nhắn bị thu nhỏ
-     - Trích xuất toàn bộ nội dung chat
-     - Chuyển đổi sang định dạng PDF
+     - Trích xuất toàn bộ nội dung chat (bao gồm hình ảnh đính kèm)
+     - Chuyển đổi sang định dạng Markdown (mặc định) hoặc PDF
      - Tải xuống file
 
-4. **Nhận file PDF:**
-   - File PDF sẽ tự động được tải xuống
+4. **Nhận file:**
+   - File sẽ tự động được tải xuống
+   - Định dạng mặc định: Markdown (.md)
    - Tên file dựa trên tiêu đề cuộc trò chuyện
-   - Nếu không có tiêu đề, file sẽ có tên dạng `gemini-chat-YYYYMMDD-HHMMSS.pdf`
+   - Nếu không có tiêu đề, file sẽ có tên dạng `gemini-chat-YYYYMMDD-HHMMSS.md`
 
 ### Lưu Ý Khi Sử Dụng
 
+- **Định dạng mặc định**: Extension hiện xuất sang Markdown vì định dạng này bảo toàn tốt hơn cấu trúc nội dung từ Gemini
 - **Cuộc trò chuyện dài**: Với các cuộc trò chuyện có hơn 100 tin nhắn, quá trình xuất có thể mất vài giây. Vui lòng đợi cho đến khi hoàn tất.
-- **Định dạng đặc biệt**: Code blocks, tables, và lists sẽ được giữ nguyên định dạng trong PDF.
-- **Scroll position**: Extension sẽ giữ nguyên vị trí cuộn của bạn sau khi mở rộng tin nhắn.
+- **Định dạng đặc biệt**: Code blocks, tables, và lists sẽ được giữ nguyên định dạng trong file xuất
+- **Hình ảnh đính kèm**: Hình ảnh trong tin nhắn của người dùng sẽ được bao gồm trong file xuất
+- **Scroll position**: Extension sẽ giữ nguyên vị trí cuộn của bạn sau khi mở rộng tin nhắn
 
 ## Xử Lý Sự Cố (Troubleshooting)
 
@@ -177,15 +182,16 @@ npm run build
 **Nguyên nhân có thể:**
 - Cuộc trò chuyện quá dài
 - Lỗi khi mở rộng tin nhắn
-- Lỗi khi tạo PDF
+- Lỗi khi tạo file
 
 **Giải pháp:**
 1. Thử lại lần nữa
-2. Kiểm tra console để xem thông báo lỗi cụ thể
-3. Với cuộc trò chuyện rất dài (>200 tin nhắn), hãy kiên nhẫn đợi
-4. Đảm bảo trình duyệt có đủ bộ nhớ
+2. Extension hiện mặc định xuất sang Markdown vì định dạng này ổn định hơn
+3. Kiểm tra console để xem thông báo lỗi cụ thể
+4. Với cuộc trò chuyện rất dài (>200 tin nhắn), hãy kiên nhẫn đợi
+5. Đảm bảo trình duyệt có đủ bộ nhớ
 
-### File PDF Thiếu Nội Dung
+### File Thiếu Nội Dung
 
 **Nguyên nhân có thể:**
 - Một số tin nhắn không thể mở rộng
@@ -196,7 +202,7 @@ npm run build
 2. Thử cuộn xuống cuối cuộc trò chuyện trước khi xuất
 3. Refresh trang và thử lại
 
-### File PDF Không Tải Xuống
+### File Không Tải Xuống
 
 **Nguyên nhân có thể:**
 - Trình duyệt chặn download
@@ -209,7 +215,7 @@ npm run build
 3. Kiểm tra dung lượng đĩa còn trống
 4. Thử tải xuống vào thư mục khác
 
-### Định Dạng PDF Không Đúng
+### Định Dạng Không Đúng
 
 **Nguyên nhân có thể:**
 - Gemini Business đã thay đổi cấu trúc HTML

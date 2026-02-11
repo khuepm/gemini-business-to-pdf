@@ -359,33 +359,52 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - _Requirements: 7.5_
 
 
-- [ ] 14. Xác định và cập nhật DOM selectors thực tế cho Gemini Business
-  - [ ] 14.1 Inspect DOM của Gemini Business với Shadow DOM structure
+- [x] 14. Xác định và cập nhật DOM selectors thực tế cho Gemini Business
+  - [x] 14.1 Inspect DOM của Gemini Business với Shadow DOM structure
     - **Shadow DOM Path đã xác định:**
       ```javascript
+      // Chat container
       document.querySelector("body > ucs-standalone-app")
         .shadowRoot.querySelector("div > div.ucs-standalone-outer-row-container > div > div.search-bar-and-results-container > div > ucs-results")
-        .shadowRoot.querySelector("div > div > div.tile.chat-mode-conversation.chat-mode-conversation > div.chat-mode-scroller.tile-content > ucs-conversation")
+        .shadowRoot.querySelector("div > div > div.tile.chat-mode-conversation > div.chat-mode-scroller.tile-content > ucs-conversation")
         .shadowRoot.querySelector("div")
+      
+      // User message content
+      ucs-fast-markdown -> shadowRoot -> div > div
+      
+      // Gemini response content
+      ucs-summary -> shadowRoot -> ... -> ucs-fast-markdown -> shadowRoot -> div > div
+      
+      // Attached images
+      turn -> ucs-carousel -> ucs-file-bubble -> shadowRoot -> div > img
       ```
-    - Tìm selector cho chat container (trong Shadow DOM)
-    - Tìm selector cho message elements (trong Shadow DOM)
-    - Tìm selector để phân biệt user vs gemini messages
-    - Tìm selector cho collapsed messages
-    - Tìm selector cho expand trigger
-    - Tìm selector cho chat title (có thể ở ngoài Shadow DOM)
-    - Tìm selector cho header container (để inject button)
-    - Document tất cả selectors trong constants file
+    - ✅ Đã tìm selector cho chat container (trong Shadow DOM)
+    - ✅ Đã tìm selector cho message elements (trong Shadow DOM)
+    - ✅ Đã tìm selector để phân biệt user vs gemini messages
+    - ✅ Đã tìm selector cho collapsed messages
+    - ✅ Đã tìm selector cho expand trigger
+    - ✅ Đã tìm selector cho chat title
+    - ✅ Đã tìm selector cho header container (để inject button)
+    - ✅ Đã document tất cả selectors trong shadow-dom-utils.ts
     - _Requirements: 1.1, 2.1, 3.1, 4.1_
   
-  - [ ] 14.2 Cập nhật code để xử lý Shadow DOM
-    - Tạo utility function để traverse Shadow DOM
-    - Update ContentExtractor để access Shadow DOM
-    - Update MessageExpander để access Shadow DOM
-    - Update TitleExtractor để access Shadow DOM
-    - Replace placeholder selectors trong tất cả modules
-    - Test lại với DOM thực tế
+  - [x] 14.2 Cập nhật code để xử lý Shadow DOM
+    - ✅ Đã tạo utility functions để traverse Shadow DOM (shadow-dom-utils.ts)
+    - ✅ Đã update ContentExtractor để access Shadow DOM
+    - ✅ Đã update MessageExpander để access Shadow DOM
+    - ✅ Đã update TitleExtractor để access Shadow DOM
+    - ✅ Đã replace placeholder selectors trong tất cả modules
+    - ✅ Đã test với DOM thực tế
+    - ✅ Đã thêm hỗ trợ trích xuất hình ảnh đính kèm
     - _Requirements: 1.1, 2.1, 3.1, 4.1_
+  
+  - [x] 14.3 Implement Markdown export as alternative to PDF
+    - ✅ Đã tạo MarkdownGenerator class
+    - ✅ Đã integrate vào ExportController
+    - ✅ Markdown là định dạng mặc định (PDF có vấn đề rendering)
+    - ✅ Hỗ trợ code blocks, tables, lists, hình ảnh
+    - ✅ Đã build và test thành công
+    - _Requirements: 5.1, 5.2, 5.3, 5.6_
 
 - [x] 15. Build và package extension
   - [x] 15.1 Configure build process
