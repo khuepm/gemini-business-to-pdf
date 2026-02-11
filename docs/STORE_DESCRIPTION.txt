@@ -1,0 +1,266 @@
+===========================================
+CHROME WEB STORE LISTING - COPY & PASTE
+===========================================
+
+-------------------------------------------
+NAME (Max 45 characters)
+-------------------------------------------
+Gemini Business to PDF
+
+-------------------------------------------
+SUMMARY (Max 132 characters)
+-------------------------------------------
+Xuất cuộc trò chuyện Gemini Business thành PDF với định dạng đẹp. Bảo toàn code blocks, tables, và tất cả formatting.
+
+-------------------------------------------
+DETAILED DESCRIPTION (Max 16,000 characters)
+-------------------------------------------
+
+Lưu trữ và chia sẻ cuộc trò chuyện Gemini AI của bạn một cách dễ dàng!
+
+Gemini Business to PDF là extension giúp bạn xuất toàn bộ cuộc trò chuyện với Gemini AI thành file PDF chất lượng cao chỉ với một click.
+
+🎯 TÍNH NĂNG CHÍNH
+
+✅ Xuất PDF Hoàn Chỉnh
+• Xuất toàn bộ nội dung cuộc trò chuyện thành file PDF
+• Tự động mở rộng các tin nhắn bị thu nhỏ
+• Không bỏ sót bất kỳ nội dung nào
+
+✅ Bảo Toàn Định Dạng
+• Giữ nguyên text formatting (bold, italic, underline)
+• Bảo toàn code blocks với syntax highlighting
+• Giữ nguyên tables và lists
+• Giữ nguyên links và tất cả styling
+
+✅ Đặt Tên Thông Minh
+• Tự động đặt tên file theo tiêu đề cuộc trò chuyện
+• Tên file dễ quản lý và tìm kiếm
+• Fallback thông minh với timestamp
+
+✅ Bảo Mật và Riêng Tư
+• Xử lý hoàn toàn trên trình duyệt của bạn
+• KHÔNG gửi dữ liệu ra ngoài
+• KHÔNG lưu trữ dữ liệu
+• KHÔNG tracking
+
+✅ Hiệu Năng Cao
+• Xử lý nhanh chóng ngay cả với cuộc trò chuyện dài (>100 tin nhắn)
+• Không làm chậm trình duyệt
+• Giao diện mượt mà và thân thiện
+
+🚀 CÁCH SỬ DỤNG
+
+1. Mở cuộc trò chuyện Gemini Business bạn muốn xuất
+2. Click nút "Export PDF" ở góc trên bên phải
+3. Đợi vài giây để extension xử lý
+4. File PDF tự động tải xuống!
+
+📋 TRƯỜNG HỢP SỬ DỤNG
+
+• Lưu trữ các cuộc trò chuyện quan trọng
+• Chia sẻ insights với đồng nghiệp
+• Tạo documentation từ AI conversations
+• Backup các research sessions
+• Tạo training materials
+• Archive project discussions
+
+🔒 CAM KẾT BẢO MẬT
+
+Chúng tôi coi trọng quyền riêng tư của bạn:
+• Không thu thập dữ liệu cá nhân
+• Không gửi dữ liệu đến server bên ngoài
+• Xử lý 100% phía client
+• Open source - có thể audit code
+• Tuân thủ Manifest V3
+
+💡 TẠI SAO CHỌN EXTENSION NÀY?
+
+• Miễn phí và open source
+• Không quảng cáo
+• Không yêu cầu đăng ký
+• Không giới hạn số lần xuất
+• Được test kỹ lưỡng với property-based testing
+• Hỗ trợ tích cực từ developer
+
+🛠️ YÊU CẦU
+
+• Chrome 88 trở lên
+• Tài khoản Gemini Business
+• Kết nối internet (để truy cập Gemini)
+
+📝 LƯU Ý
+
+• Extension chỉ hoạt động trên gemini.google.com
+• Với cuộc trò chuyện rất dài, quá trình xuất có thể mất vài giây
+• Đảm bảo trình duyệt có đủ bộ nhớ cho cuộc trò chuyện lớn
+
+🆘 HỖ TRỢ
+
+Gặp vấn đề? Chúng tôi sẵn sàng giúp đỡ!
+• GitHub: https://github.com/yourusername/gemini-business-to-pdf
+• Email: support@example.com
+
+⭐ ĐÁNH GIÁ
+
+Nếu extension hữu ích, hãy để lại đánh giá 5 sao! Feedback của bạn giúp chúng tôi cải thiện sản phẩm.
+
+---
+
+Made with ❤️ for Gemini Business users
+
+-------------------------------------------
+CATEGORY
+-------------------------------------------
+Productivity
+
+-------------------------------------------
+LANGUAGE
+-------------------------------------------
+Vietnamese (Tiếng Việt)
+
+-------------------------------------------
+OFFICIAL WEBSITE
+-------------------------------------------
+https://github.com/yourusername/gemini-business-to-pdf
+
+-------------------------------------------
+SUPPORT URL
+-------------------------------------------
+https://github.com/yourusername/gemini-business-to-pdf/issues
+
+-------------------------------------------
+PRIVACY POLICY URL
+-------------------------------------------
+https://github.com/yourusername/gemini-business-to-pdf/blob/main/docs/PRIVACY_POLICY.md
+
+-------------------------------------------
+PERMISSIONS JUSTIFICATION
+-------------------------------------------
+
+activeTab:
+This permission allows the extension to access the current Gemini Business tab when you click the export button. It's needed to read the chat content and generate the PDF. The extension only accesses the tab when you explicitly click "Export PDF" - it does not monitor or track your browsing.
+
+host_permissions (https://gemini.google.com/*):
+This permission allows the extension to inject the "Export PDF" button into Gemini Business pages. It's restricted to only gemini.google.com domain and does not access any other websites. This ensures the extension only works where it's supposed to work.
+
+-------------------------------------------
+SINGLE PURPOSE DESCRIPTION
+-------------------------------------------
+This extension serves a single purpose: to export Gemini Business conversations to PDF format while preserving all formatting. It does not collect data, show ads, or perform any other functions.
+
+-------------------------------------------
+KEYWORDS (for internal use)
+-------------------------------------------
+Primary: gemini pdf, export gemini, gemini business, ai chat export, conversation pdf
+Secondary: gemini save, gemini download, ai conversation, chat export, pdf converter
+Long-tail: export gemini business to pdf, save gemini conversation, gemini chat pdf export
+
+-------------------------------------------
+PROMOTIONAL TEXT (for social media)
+-------------------------------------------
+
+Twitter/X (280 characters):
+Export your Gemini Business conversations to beautiful PDFs! 🚀 Free, secure, and preserves all formatting. No data collection, 100% client-side processing. #GeminiAI #Productivity
+
+LinkedIn:
+Introducing Gemini Business to PDF - a free Chrome extension that lets you export your AI conversations to professionally formatted PDF files. Perfect for documentation, team collaboration, and archiving important insights. Privacy-focused with 100% client-side processing.
+
+Reddit:
+I built a Chrome extension to export Gemini Business conversations to PDF. It automatically expands collapsed messages, preserves all formatting (code blocks, tables, lists), and processes everything locally - no data sent anywhere. Free and open source!
+
+-------------------------------------------
+PRESS RELEASE SNIPPET
+-------------------------------------------
+
+FOR IMMEDIATE RELEASE
+
+New Chrome Extension Enables Easy Export of Gemini Business Conversations to PDF
+
+[Your City, Date] - Today marks the launch of Gemini Business to PDF, a free Chrome extension that allows users to export their Gemini AI conversations to beautifully formatted PDF files with a single click.
+
+The extension addresses a common need among Gemini Business users: the ability to save, share, and archive important AI conversations. With automatic message expansion, complete format preservation, and intelligent filename generation, users can now easily document their AI interactions for future reference or team collaboration.
+
+"Privacy and security were our top priorities," says [Your Name], creator of the extension. "All processing happens locally in the user's browser - we don't collect, store, or transmit any data whatsoever."
+
+Key features include:
+• One-click PDF export
+• Automatic expansion of collapsed messages
+• Preservation of all formatting including code blocks and tables
+• Smart filename generation based on conversation title
+• 100% client-side processing with no data collection
+
+The extension is available now in the Chrome Web Store and is completely free and open source.
+
+For more information, visit: https://github.com/yourusername/gemini-business-to-pdf
+
+-------------------------------------------
+FAQ FOR STORE LISTING
+-------------------------------------------
+
+Q: Is this extension free?
+A: Yes, completely free with no ads or in-app purchases.
+
+Q: Does it work with free Gemini?
+A: It's designed for Gemini Business but may work with free Gemini.
+
+Q: Is my data safe?
+A: Absolutely. All processing happens in your browser. No data is sent anywhere.
+
+Q: Can I customize the PDF format?
+A: Not in version 1.0, but customization is planned for future releases.
+
+Q: Does it work offline?
+A: You need internet to access Gemini, but PDF generation works offline.
+
+Q: What about very long conversations?
+A: The extension handles conversations with 100+ messages. Very long ones may take a few seconds.
+
+-------------------------------------------
+VERSION NOTES (for first submission)
+-------------------------------------------
+
+Version 1.0.0 - Initial Release
+
+Features:
+• Export Gemini Business conversations to PDF
+• Automatic message expansion
+• Format preservation (bold, italic, code blocks, tables, lists)
+• Smart filename generation
+• Client-side processing
+• Privacy-focused (no data collection)
+• Comprehensive test coverage
+
+This is the initial release of Gemini Business to PDF. We've thoroughly tested the extension with property-based testing and integration tests to ensure reliability and correctness.
+
+-------------------------------------------
+RESPONSE TO COMMON REVIEW QUESTIONS
+-------------------------------------------
+
+Q: Why do you need access to gemini.google.com?
+A: The extension needs to access Gemini Business pages to inject the export button and read chat content when you click export. It only works on gemini.google.com and does not access any other websites.
+
+Q: Do you collect any user data?
+A: No. The extension does not collect, store, or transmit any data. All processing happens locally in your browser. You can verify this by checking the network tab in Chrome DevTools - no external requests are made.
+
+Q: Is the extension open source?
+A: Yes, the source code is available on GitHub for anyone to audit and contribute to.
+
+Q: How do you make money if it's free?
+A: This is a passion project to help the Gemini Business community. There's no monetization - it's truly free.
+
+-------------------------------------------
+NOTES FOR SUBMISSION
+-------------------------------------------
+
+1. Replace all placeholder URLs (yourusername, example.com) with actual URLs
+2. Ensure privacy policy is accessible at the provided URL
+3. Test all links before submission
+4. Have all promotional images ready before starting submission
+5. Double-check that extension actually works as described
+6. Prepare to respond to review feedback within 24 hours
+7. Have a plan for handling user reviews and support requests
+
+-------------------------------------------
+END OF STORE LISTING CONTENT
+-------------------------------------------
