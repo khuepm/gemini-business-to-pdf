@@ -2,11 +2,13 @@
  * TitleExtractor - Trích xuất tiêu đề chat và tạo filename cho PDF
  * 
  * Trách nhiệm:
- * - Tìm và trích xuất tiêu đề chat từ DOM
+ * - Tìm và trích xuất tiêu đề chat từ DOM (bao gồm Shadow DOM)
  * - Sanitize tên file để loại bỏ ký tự không hợp lệ
  * - Tạo tên file fallback nếu không có title
  * - Giới hạn độ dài tên file
  */
+
+import { getChatTitleElement } from '../utils/shadow-dom-utils';
 
 /**
  * Interface cho TitleExtractor
@@ -54,7 +56,7 @@ const SELECTORS = {
  */
 export class TitleExtractor implements ITitleExtractor {
   /**
-   * Trích xuất chat title từ DOM
+   * Trích xuất chat title từ DOM (bao gồm Shadow DOM)
    * Tìm title element bằng selector và lấy textContent
    * 
    * @returns Title string hoặc null nếu không tìm thấy
@@ -62,7 +64,14 @@ export class TitleExtractor implements ITitleExtractor {
    */
   extractTitle(): string | null {
     try {
-      // Thử tìm title element bằng selector
+      // First try Shadow DOM utility
+      const shadowTitle = getChatTitleElement();
+      if (shadowTitle) {
+        const title = (shadowTitle.textContent || shadowTitle.innerHTML || '').trim();
+        if (title) return title;
+      }
+
+      // Fallback: Thử tìm title element bằng selector trong regular DOM
       const titleElement = document.querySelector(SELECTORS.chatTitle);
       
       if (!titleElement) {

@@ -10,6 +10,7 @@
 
 import { Logger } from '../utils/logger';
 import { DOMError } from '../utils/error-handler';
+import { getChatContainer, getMessageElements } from '../utils/shadow-dom-utils';
 
 /**
  * Represents a single chat message
@@ -116,12 +117,19 @@ export class ContentExtractor {
   }
 
   /**
-   * Find the chat container element in the DOM
+   * Find the chat container element in the DOM (including Shadow DOM)
    * 
    * @returns The chat container HTMLElement or null if not found
    */
   private findChatContainer(): HTMLElement | null {
-    // Try multiple selectors to find the chat container
+    // First try Shadow DOM path
+    const shadowContainer = getChatContainer();
+    if (shadowContainer) {
+      Logger.info('Chat container found via Shadow DOM');
+      return shadowContainer;
+    }
+
+    // Fallback: Try regular DOM selectors
     const selectors = this.CHAT_CONTAINER_SELECTOR.split(',').map(s => s.trim());
     
     for (const selector of selectors) {
@@ -143,6 +151,14 @@ export class ContentExtractor {
    * @returns Array of message HTMLElements
    */
   private findMessageElements(chatContainer: HTMLElement): HTMLElement[] {
+    // First try using Shadow DOM utility
+    const shadowMessages = getMessageElements();
+    if (shadowMessages.length > 0) {
+      Logger.info(`Found ${shadowMessages.length} messages via Shadow DOM`);
+      return shadowMessages;
+    }
+
+    // Fallback: Try regular DOM selectors
     const selectors = this.MESSAGE_ELEMENT_SELECTOR.split(',').map(s => s.trim());
     const messageElements: HTMLElement[] = [];
 

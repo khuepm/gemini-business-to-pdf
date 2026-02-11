@@ -10,6 +10,7 @@
 
 import { Logger } from '../utils/logger';
 import { ExpansionError } from '../utils/error-handler';
+import { getCollapsedMessages } from '../utils/shadow-dom-utils';
 
 /**
  * Result of expanding all messages
@@ -58,7 +59,14 @@ export class MessageExpander {
     Logger.info('Finding collapsed messages');
 
     try {
-      // Query all collapsed messages using the selector
+      // First try Shadow DOM utility
+      const shadowCollapsed = getCollapsedMessages();
+      if (shadowCollapsed.length > 0) {
+        Logger.info(`Found ${shadowCollapsed.length} collapsed messages via Shadow DOM`);
+        return shadowCollapsed;
+      }
+
+      // Fallback: Query regular DOM
       const collapsedMessages = Array.from(
         document.querySelectorAll<HTMLElement>(this.COLLAPSED_MESSAGE_SELECTOR)
       );

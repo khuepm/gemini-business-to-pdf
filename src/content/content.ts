@@ -9,21 +9,7 @@
 
 import { ExportController } from './export-controller';
 import { Logger } from '../utils/logger';
-
-/**
- * Check if the current URL matches the Gemini Business domain
- * 
- * Validates: Requirements 7.2
- * 
- * @returns true if the URL is on the Gemini Business domain, false otherwise
- */
-function isGeminiBusinessDomain(): boolean {
-  const currentUrl = window.location.href;
-  // Match https://business.gemini.google with optional trailing slash, path, or query
-  const geminiBusinessPattern = /^https:\/\/business\.gemini\.google(\/|\?|$)/;
-  
-  return geminiBusinessPattern.test(currentUrl);
-}
+import { isGeminiBusinessDomain } from '../utils/shadow-dom-utils';
 
 /**
  * Initialize the extension when DOM is ready

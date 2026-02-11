@@ -359,19 +359,30 @@ Kế hoạch này chia việc triển khai Chrome extension "Gemini Business to 
     - _Requirements: 7.5_
 
 
-- [x] 14. Xác định và cập nhật DOM selectors thực tế
-  - [x] 14.1 Inspect DOM của Gemini Business để xác định selectors
-    - Tìm selector cho chat container
-    - Tìm selector cho message elements
+- [ ] 14. Xác định và cập nhật DOM selectors thực tế cho Gemini Business
+  - [ ] 14.1 Inspect DOM của Gemini Business với Shadow DOM structure
+    - **Shadow DOM Path đã xác định:**
+      ```javascript
+      document.querySelector("body > ucs-standalone-app")
+        .shadowRoot.querySelector("div > div.ucs-standalone-outer-row-container > div > div.search-bar-and-results-container > div > ucs-results")
+        .shadowRoot.querySelector("div > div > div.tile.chat-mode-conversation.chat-mode-conversation > div.chat-mode-scroller.tile-content > ucs-conversation")
+        .shadowRoot.querySelector("div")
+      ```
+    - Tìm selector cho chat container (trong Shadow DOM)
+    - Tìm selector cho message elements (trong Shadow DOM)
     - Tìm selector để phân biệt user vs gemini messages
     - Tìm selector cho collapsed messages
     - Tìm selector cho expand trigger
-    - Tìm selector cho chat title
+    - Tìm selector cho chat title (có thể ở ngoài Shadow DOM)
     - Tìm selector cho header container (để inject button)
     - Document tất cả selectors trong constants file
     - _Requirements: 1.1, 2.1, 3.1, 4.1_
   
-  - [x] 14.2 Cập nhật code với selectors thực tế
+  - [ ] 14.2 Cập nhật code để xử lý Shadow DOM
+    - Tạo utility function để traverse Shadow DOM
+    - Update ContentExtractor để access Shadow DOM
+    - Update MessageExpander để access Shadow DOM
+    - Update TitleExtractor để access Shadow DOM
     - Replace placeholder selectors trong tất cả modules
     - Test lại với DOM thực tế
     - _Requirements: 1.1, 2.1, 3.1, 4.1_
