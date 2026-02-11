@@ -42,11 +42,11 @@ export interface ITitleExtractor {
 }
 
 /**
- * DOM selectors cho title extraction
+ * DOM selectors cho title extraction - Gemini Business specific
  */
 const SELECTORS = {
-  // Selector cho chat title - cần được xác định từ DOM thực tế
-  chatTitle: '.chat-title, [data-test-id="chat-title"], h1.title, .conversation-title',
+  // Selector cho chat title - tìm trong các vị trí có thể
+  chatTitle: 'h1, h2, .title, [role="heading"]',
 };
 
 /**

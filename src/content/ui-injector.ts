@@ -43,16 +43,34 @@ export class UIInjector {
       this.button.appendChild(text);
       
       // Inject button into page
-      // Note: Selector is placeholder and will be updated in task 14
-      // For now, append to body as fallback
-      const headerContainer = document.querySelector('.header-actions');
-      if (headerContainer) {
-        headerContainer.appendChild(this.button);
-        Logger.info('Button injected into header container');
-      } else {
-        // Fallback: append to body
+      // Try to find a suitable location in Gemini Business UI
+      // Look for toolbar, header, or action areas
+      const possibleContainers = [
+        document.querySelector('.toolbar'),
+        document.querySelector('.header-actions'),
+        document.querySelector('[role="toolbar"]'),
+        document.querySelector('.app-bar'),
+        document.querySelector('header')
+      ];
+      
+      let injected = false;
+      for (const container of possibleContainers) {
+        if (container) {
+          container.appendChild(this.button);
+          Logger.info(`Button injected into: ${container.className || container.tagName}`);
+          injected = true;
+          break;
+        }
+      }
+      
+      if (!injected) {
+        // Fallback: create a fixed position button
+        this.button.style.position = 'fixed';
+        this.button.style.top = '20px';
+        this.button.style.right = '20px';
+        this.button.style.zIndex = '10000';
         document.body.appendChild(this.button);
-        Logger.warn('Header container not found, button appended to body');
+        Logger.warn('No suitable container found, button added as fixed position');
       }
 
       Logger.info('Export button successfully injected');

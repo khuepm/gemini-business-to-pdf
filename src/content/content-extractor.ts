@@ -42,11 +42,11 @@ export interface ChatContent {
  * ContentExtractor class for extracting chat content
  */
 export class ContentExtractor {
-  // Selectors for DOM elements (placeholders, will be updated in task 14)
-  private readonly CHAT_CONTAINER_SELECTOR = '.chat-container, [role="main"], main';
-  private readonly MESSAGE_ELEMENT_SELECTOR = '.message, [data-message], .chat-message';
-  private readonly USER_MESSAGE_SELECTOR = '.user-message, [data-sender="user"], .message.user';
-  private readonly GEMINI_MESSAGE_SELECTOR = '.gemini-message, [data-sender="gemini"], .message.gemini, .model-message';
+  // Selectors for DOM elements - Gemini Business specific
+  private readonly CHAT_CONTAINER_SELECTOR = '.main.chat-mode, .chat-mode-scroller';
+  private readonly MESSAGE_ELEMENT_SELECTOR = 'ucs-summary, ucs-text-streamer, ucs-response-markdown, ucs-fast-markdown';
+  private readonly USER_MESSAGE_SELECTOR = 'ucs-text-streamer, ucs-fast-markdown';
+  private readonly GEMINI_MESSAGE_SELECTOR = 'ucs-summary, ucs-response-markdown';
 
   constructor() {
     Logger.info('ContentExtractor initialized');
@@ -161,7 +161,7 @@ export class ContentExtractor {
 
   /**
    * Extract a single message from a message element
-   * Clones the element to avoid modifying the original DOM
+   * Handles Shadow DOM for Gemini Business custom elements
    * 
    * @param messageElement - The message element to extract
    * @returns Message object with sender, content, and metadata
@@ -172,14 +172,30 @@ export class ContentExtractor {
     Logger.info('Extracting message');
 
     try {
-      // Clone the element to avoid modifying the original DOM
-      const clonedElement = messageElement.cloneNode(true) as HTMLElement;
-
       // Identify the sender
       const sender = this.identifySender(messageElement);
 
-      // Extract HTML content (preserve structure and styling)
-      const content = clonedElement.innerHTML;
+      // Extract HTML content from shadow DOM if available
+      let content = '';
+      
+      if (messageElement.shadowRoot) {
+        // Access shadow DOM content
+        const shadowContent = messageElement.shadowRoot.querySelector('.markdown-document, [class*="markdown"]');
+        if (shadowContent) {
+          content = shadowContent.innerHTML;
+        } else {
+          // Fallback: get all text content from shadow root
+          content = messageElement.shadowRoot.textContent || '';
+        }
+      } else {
+        // Fallback: use regular innerHTML
+        content = messageElement.innerHTML;
+      }
+
+      // If still empty, try textContent
+      if (!content.trim()) {
+        content = messageElement.textContent || '';
+      }
 
       // Extract timestamp if available
       const timestamp = this.extractTimestamp(messageElement);
@@ -209,7 +225,7 @@ export class ContentExtractor {
 
   /**
    * Identify the sender of a message (user or gemini)
-   * Checks classes and attributes to determine the sender
+   * Checks tag names for Gemini Business custom elements
    * 
    * @param messageElement - The message element to check
    * @returns 'user' or 'gemini'
@@ -217,7 +233,21 @@ export class ContentExtractor {
    * Requirements: 3.7
    */
   identifySender(messageElement: HTMLElement): 'user' | 'gemini' {
-    // Check if it's a user message
+    const tagName = messageElement.tagName.toLowerCase();
+    
+    // User messages: ucs-text-streamer, ucs-fast-markdown
+    if (tagName === 'ucs-text-streamer' || tagName === 'ucs-fast-markdown') {
+      Logger.info('Identified as user message');
+      return 'user';
+    }
+    
+    // Gemini messages: ucs-summary, ucs-response-markdown
+    if (tagName === 'ucs-summary' || tagName === 'ucs-response-markdown') {
+      Logger.info('Identified as gemini message');
+      return 'gemini';
+    }
+
+    // Check if it's a user message by selector
     const userSelectors = this.USER_MESSAGE_SELECTOR.split(',').map(s => s.trim());
     for (const selector of userSelectors) {
       if (messageElement.matches(selector)) {
@@ -226,35 +256,13 @@ export class ContentExtractor {
       }
     }
 
-    // Check if it's a gemini message
+    // Check if it's a gemini message by selector
     const geminiSelectors = this.GEMINI_MESSAGE_SELECTOR.split(',').map(s => s.trim());
     for (const selector of geminiSelectors) {
       if (messageElement.matches(selector)) {
         Logger.info('Identified as gemini message');
         return 'gemini';
       }
-    }
-
-    // Check data-sender attribute
-    const dataSender = messageElement.getAttribute('data-sender');
-    if (dataSender === 'user') {
-      Logger.info('Identified as user message (data-sender attribute)');
-      return 'user';
-    }
-    if (dataSender === 'gemini' || dataSender === 'model' || dataSender === 'assistant') {
-      Logger.info('Identified as gemini message (data-sender attribute)');
-      return 'gemini';
-    }
-
-    // Check for common class patterns
-    const classList = messageElement.className.toLowerCase();
-    if (classList.includes('user')) {
-      Logger.info('Identified as user message (class pattern)');
-      return 'user';
-    }
-    if (classList.includes('gemini') || classList.includes('model') || classList.includes('assistant') || classList.includes('ai')) {
-      Logger.info('Identified as gemini message (class pattern)');
-      return 'gemini';
     }
 
     // Default to gemini if unable to determine
