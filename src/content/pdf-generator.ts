@@ -202,6 +202,18 @@ export class PDFGenerator {
           margin: 8px 0;
         }
 
+        .message-content .attached-images {
+          margin: 10px 0;
+        }
+
+        .message-content .attached-images img {
+          max-width: 100%;
+          height: auto;
+          margin: 10px 0;
+          border-radius: 4px;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
         .message-content code {
           background-color: #f0f0f0;
           padding: 2px 6px;

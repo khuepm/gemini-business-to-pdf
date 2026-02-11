@@ -204,10 +204,14 @@ export function getHeaderElement(): HTMLElement | null {
 
 /**
  * Extracts content from a user message element (ucs-fast-markdown)
+ * Also extracts attached images from ucs-carousel if present
  * Path: ucs-fast-markdown -> shadowRoot -> div > div > p (or div > div for full content)
+ * Images: parent turn -> ucs-carousel -> ucs-file-bubble -> shadowRoot -> div > img
  */
 export function extractUserMessageContent(userMessage: HTMLElement): string {
   try {
+    let content = '';
+    
     if (userMessage.shadowRoot) {
       // Primary: Get full content from div > div (contains all content including multiple paragraphs)
       const fullContent = userMessage.shadowRoot.querySelector('div > div');
@@ -215,48 +219,92 @@ export function extractUserMessageContent(userMessage: HTMLElement): string {
         const innerHTML = fullContent.innerHTML.trim();
         if (innerHTML) {
           console.log('[extractUserMessageContent] Extracted from div > div:', innerHTML.substring(0, 100));
-          return innerHTML;
+          content = innerHTML;
         }
       }
       
       // Fallback 1: try p tag only (might be truncated)
-      const pContent = userMessage.shadowRoot.querySelector('div > div > p');
-      if (pContent) {
-        const innerHTML = pContent.innerHTML.trim();
-        if (innerHTML) {
-          console.log('[extractUserMessageContent] Extracted from p tag:', innerHTML.substring(0, 100));
-          return innerHTML;
+      if (!content) {
+        const pContent = userMessage.shadowRoot.querySelector('div > div > p');
+        if (pContent) {
+          const innerHTML = pContent.innerHTML.trim();
+          if (innerHTML) {
+            console.log('[extractUserMessageContent] Extracted from p tag:', innerHTML.substring(0, 100));
+            content = innerHTML;
+          }
         }
       }
       
       // Fallback 2: try any div with content
-      const anyDiv = userMessage.shadowRoot.querySelector('div');
-      if (anyDiv) {
-        const innerHTML = anyDiv.innerHTML.trim();
-        if (innerHTML) {
-          console.log('[extractUserMessageContent] Extracted from any div:', innerHTML.substring(0, 100));
-          return innerHTML;
+      if (!content) {
+        const anyDiv = userMessage.shadowRoot.querySelector('div');
+        if (anyDiv) {
+          const innerHTML = anyDiv.innerHTML.trim();
+          if (innerHTML) {
+            console.log('[extractUserMessageContent] Extracted from any div:', innerHTML.substring(0, 100));
+            content = innerHTML;
+          }
         }
       }
       
       // Fallback 3: get text content from shadow root
-      const textContent = userMessage.shadowRoot.textContent?.trim();
-      if (textContent) {
-        console.log('[extractUserMessageContent] Extracted from textContent:', textContent.substring(0, 100));
-        return textContent;
+      if (!content) {
+        const textContent = userMessage.shadowRoot.textContent?.trim();
+        if (textContent) {
+          console.log('[extractUserMessageContent] Extracted from textContent:', textContent.substring(0, 100));
+          content = textContent;
+        }
       }
     }
     
     // If no shadow root, try regular content
-    const innerHTML = userMessage.innerHTML.trim();
-    if (innerHTML) {
-      console.log('[extractUserMessageContent] Extracted from innerHTML (no shadow):', innerHTML.substring(0, 100));
-      return innerHTML;
+    if (!content) {
+      const innerHTML = userMessage.innerHTML.trim();
+      if (innerHTML) {
+        console.log('[extractUserMessageContent] Extracted from innerHTML (no shadow):', innerHTML.substring(0, 100));
+        content = innerHTML;
+      }
     }
     
-    const textContent = userMessage.textContent?.trim() || '';
-    console.log('[extractUserMessageContent] Fallback to textContent:', textContent.substring(0, 100));
-    return textContent;
+    if (!content) {
+      const textContent = userMessage.textContent?.trim() || '';
+      console.log('[extractUserMessageContent] Fallback to textContent:', textContent.substring(0, 100));
+      content = textContent;
+    }
+    
+    // Check for attached images in the parent turn
+    const turn = userMessage.closest('div.turn');
+    if (turn) {
+      const carousel = turn.querySelector('ucs-carousel');
+      if (carousel) {
+        console.log('[extractUserMessageContent] Found carousel with images');
+        const fileBubbles = carousel.querySelectorAll('ucs-file-bubble');
+        
+        if (fileBubbles.length > 0) {
+          console.log(`[extractUserMessageContent] Found ${fileBubbles.length} file bubbles`);
+          const images: string[] = [];
+          
+          fileBubbles.forEach((bubble, index) => {
+            const bubbleElement = bubble as HTMLElement & { shadowRoot: ShadowRoot };
+            if (bubbleElement.shadowRoot) {
+              const img = bubbleElement.shadowRoot.querySelector('div > img') as HTMLImageElement;
+              if (img && img.src) {
+                console.log(`[extractUserMessageContent] Found image ${index + 1}: ${img.src.substring(0, 50)}...`);
+                images.push(`<img src="${img.src}" alt="Attached image ${index + 1}" style="max-width: 100%; height: auto; margin: 10px 0;" />`);
+              }
+            }
+          });
+          
+          // Append images to content
+          if (images.length > 0) {
+            content += '<div class="attached-images">' + images.join('') + '</div>';
+            console.log(`[extractUserMessageContent] Added ${images.length} images to content`);
+          }
+        }
+      }
+    }
+    
+    return content;
   } catch (error) {
     console.error('Error extracting user message content:', error);
     return userMessage.textContent?.trim() || '';

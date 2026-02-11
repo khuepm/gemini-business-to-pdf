@@ -18,9 +18,9 @@ export class UIInjector {
   }
 
   /**
-   * Inject export button into the Gemini Business page header
+   * Inject export button into the Gemini Business page
    * Creates button with icon, text, and tooltip
-   * Places button next to Gemini Business logo
+   * Uses fixed position to avoid conflicts with Gemini UI
    * 
    * Requirements: 1.1, 1.3, 1.4
    */
@@ -44,14 +44,9 @@ export class UIInjector {
       this.button.appendChild(icon);
       this.button.appendChild(text);
       
-      // Try to get header element using Shadow DOM utility
-      const headerElement = getHeaderElement();
-      if (headerElement) {
-        headerElement.appendChild(this.button);
-        Logger.info('Button injected into header element');
-      } else {
-        Logger.warn('Header element not found, button not injected');
-      }
+      // Inject button with fixed position
+      document.body.appendChild(this.button);
+      Logger.info('Button injected with fixed position');
 
       Logger.info('Export button successfully injected');
     } catch (error) {
